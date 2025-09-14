@@ -1,0 +1,35 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Users can read and write their own profile data
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Suburb data - publicly readable but only admins can write
+    match /suburbs/{suburbId} {
+      allow read: if true;
+      allow write: if request.auth != null &&
+                      request.auth.token.admin == true;
+    }
+
+    // Census data - publicly readable but only admins can write
+    match /census/{censusId} {
+      allow read: if true;
+      allow write: if request.auth != null &&
+                      request.auth.token.admin == true;
+    }
+
+    // Crime data - publicly readable but only admins can write
+    match /crime/{crimeId} {
+      allow read: if true;
+      allow write: if request.auth != null &&
+                      request.auth.token.admin == true;
+    }
+
+    // User saved searches and preferences
+    match /user-searches/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}

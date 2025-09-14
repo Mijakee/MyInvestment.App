@@ -1,0 +1,47 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "suburbs",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "state",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "safetyRating",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "census",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "suburbId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "year",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "crime",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "suburbId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "year",
+          "order": "DESCENDING"
+        }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}
