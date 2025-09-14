@@ -18,9 +18,14 @@ A web and mobile application that analyzes Australian Census data (2011, 2016, 2
 
 ## Development Status
 
-- **Current State**: Basic project structure established
-- **Branch**: master (initial setup complete)
+- **Current State**: ABS TableBuilder API integration in progress
+- **Branch**: master (will branch to `feature/abs-data-implementation`)
 - **Structure**: Full-stack application with web and mobile clients
+- **Recent Progress**:
+  - ABS API integration layer implemented (`src/lib/abs-api.ts`)
+  - Real ABS Census DataPack parser created (`src/lib/abs-real-parser.ts`)
+  - API test endpoint established (`src/app/api/abs/test/route.ts`)
+  - Sample data files added for development testing
 
 ## Project Structure
 
@@ -121,7 +126,8 @@ npm run deploy
    - Update environment variables with your project config
 
 3. **Data Sources**:
-   - Australian Census data via ABS API or Excel files
+   - Australian Census data via ABS TableBuilder API (data.api.abs.gov.au)
+   - Real ABS Census DataPacks (T01 demographics, T02 economics)
    - WA Police crime statistics via Excel files
    - Data processing handled by Firebase Functions
 
@@ -131,6 +137,12 @@ npm run deploy
 - Suburb, CensusData, CrimeData interfaces
 - User preferences and search criteria
 - API response types
+
+### Data Layer (`src/lib/`)
+- `abs-api.ts`: ABS TableBuilder API integration layer
+- `abs-real-parser.ts`: Real ABS Census DataPack parser (T01/T02)
+- `csv-parser.ts`: Generic CSV parsing utilities
+- Firebase configuration and utilities
 
 ### Utilities (`src/utils/`)
 - Constants for Australian states, census years

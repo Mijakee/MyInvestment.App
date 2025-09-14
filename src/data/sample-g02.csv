@@ -1,0 +1,6 @@
+region_id,region_name,Median_age_persons,Median_age_males,Median_age_females,Median_tot_prsnl_inc_weekly,Median_tot_hhd_inc_weekly,Median_tot_fam_inc_weekly,Median_rent_weekly,Median_mortgage_repay_monthly,Average_household_size,Average_num_psns_per_bedroom
+SSC10050,Alexandria (NSW),32.5,31.2,33.8,1850,3200,3800,650,2800,2.1,1.2
+SSC10091,Annandale (NSW),35.2,34.1,36.3,1950,3400,4100,720,3200,2.3,1.1
+SSC10176,Balmain (NSW),38.7,37.5,39.9,2150,3800,4500,850,3800,2.4,1.0
+SSC10432,Bondi Beach (NSW),33.1,32.4,33.8,1750,2900,3500,720,3600,2.0,1.3
+SSC10654,Darlinghurst (NSW),29.8,28.9,30.7,1650,2800,3200,580,2400,1.8,1.4

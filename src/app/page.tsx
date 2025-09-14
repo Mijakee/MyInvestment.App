@@ -34,12 +34,18 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="text-center mt-12">
+        <div className="text-center mt-12 space-y-4">
           <a
             href="/suburbs"
-            className="inline-block bg-primary text-primary-foreground px-8 py-3 rounded-lg font-medium hover:opacity-90 transition-opacity"
+            className="inline-block bg-primary text-primary-foreground px-8 py-3 rounded-lg font-medium hover:opacity-90 transition-opacity mr-4"
           >
             Start Analysis
+          </a>
+          <a
+            href="/admin"
+            className="inline-block bg-secondary text-secondary-foreground px-8 py-3 rounded-lg font-medium hover:opacity-90 transition-opacity"
+          >
+            Import Real Data
           </a>
         </div>
       </div>

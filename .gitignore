@@ -80,3 +80,35 @@ Thumbs.db
 logs/
 *.log
 lerna-debug.log*
+
+# Data files (keep samples, ignore large datasets)
+src/data/abs-real/*/2021Census_T*.csv
+src/data/abs-real/*/README.txt
+src/data/abs-real/*/Metadata_*.xlsx
+src/data/large-datasets/
+src/data/temp/
+src/data/cache/
+
+# API test results and temporary files
+docs/api/test-results/
+temp/
+*.tmp
+
+# Local development
+.env.development
+.env.production
+api-keys.txt
+secrets.json
+
+# Testing
+coverage/
+.nyc_output/
+test-results/
+
+# Performance and profiling
+*.prof
+.clinic/
+
+# Documentation build artifacts
+docs/build/
+docs/dist/
