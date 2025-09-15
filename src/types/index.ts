@@ -41,13 +41,13 @@ export interface CensusData {
   }
 }
 
-// Crime data types
+// Crime data types (Enhanced for WA Police integration)
 export interface CrimeData {
   id: string
   suburbId: string
   year: number // 2007-2025
   totalOffenses: number
-  crimeRate: number // per 1000 population
+  crimeRate: number // per 100,000 population
   categories: {
     assault: number
     burglary: number
@@ -59,6 +59,53 @@ export interface CrimeData {
     other: number
   }
   trend: 'increasing' | 'decreasing' | 'stable'
+}
+
+// WA Police specific crime data types
+export interface WACrimeData {
+  id: string
+  location: string              // Police district or locality
+  locationCode?: string         // Police district code
+  locationLevel: 'state' | 'region' | 'district' | 'locality'
+
+  // Crime statistics
+  totalOffences: number
+  offencesByCategory: {
+    [category: string]: number
+  }
+
+  // Rate calculations (per 100,000 population)
+  crimeRate: number
+  ratesByCategory: {
+    [category: string]: number
+  }
+
+  // Temporal data
+  reportPeriod: {
+    startDate: string           // ISO date string
+    endDate: string             // ISO date string
+    periodType: 'monthly' | 'quarterly' | 'annual'
+  }
+
+  // Data quality metrics
+  dataQuality: {
+    completeness: number        // 0-1 score
+    lastUpdated: string         // ISO timestamp
+    sourceVersion: string       // Excel file version
+  }
+}
+
+// Raw crime data from WA Police Excel files
+export interface RawWACrimeRecord {
+  location: string
+  offenceType: string
+  offenceSubType?: string
+  year: number
+  month?: number
+  quarter?: number
+  offenceCount: number
+  rate?: number
+  populationBase?: number
 }
 
 // User types

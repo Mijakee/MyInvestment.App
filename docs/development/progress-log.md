@@ -52,6 +52,16 @@ MyInvestmentApp - Australian property investment analysis platform using Census 
 - Sample CSV files for development testing
 - Validation data for parser testing
 
+##### 5. **NEW**: Crime Data Integration (`src/lib/crime-parser.ts`)
+- Complete WA Police Excel parser for Crime Time Series data
+- Automated download functionality with timeout handling
+- Data processing pipeline: raw → processed → validated
+- Geographic level detection (state/region/district/locality)
+- Crime category normalization and aggregation
+- Quality scoring and validation metrics
+- Test endpoint at `/api/crime/test` with full pipeline testing
+- Comprehensive unit tests with Jest integration
+
 #### Technical Achievements
 - **Type Safety**: Full TypeScript coverage with comprehensive interfaces
 - **Error Handling**: Robust error handling for API failures and data parsing
