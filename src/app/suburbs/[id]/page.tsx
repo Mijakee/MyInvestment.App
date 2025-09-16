@@ -187,7 +187,7 @@ export default function SuburbDetailPage() {
             ← Back to Suburbs
           </Link>
 
-          <div className="bg-white rounded-2xl shadow-lg border border-border p-8">
+          <div className="bg-gray-50 rounded-2xl shadow-lg border border-gray-200 p-8">
             <div className="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-6">
               <div className="flex-1">
                 <div className="flex items-start gap-4 mb-4">
@@ -273,7 +273,7 @@ export default function SuburbDetailPage() {
           <div className="lg:col-span-2 space-y-8">
             {/* Economic Base */}
             {suburb.economic_base && suburb.economic_base.length > 0 && (
-              <div className="bg-white rounded-2xl shadow-lg border border-border p-6">
+              <div className="bg-gray-50 rounded-2xl shadow-lg border border-gray-200 p-6">
                 <h2 className="text-2xl font-semibold text-foreground mb-4">Economic Base</h2>
                 <div className="flex flex-wrap gap-2">
                   {suburb.economic_base.map((base, index) => (
@@ -287,32 +287,32 @@ export default function SuburbDetailPage() {
 
             {/* Safety Analysis */}
             {safetyRating && (
-              <div className="bg-white rounded-2xl shadow-lg border border-border p-6">
+              <div className="bg-gray-50 rounded-2xl shadow-lg border border-gray-200 p-6">
                 <h2 className="text-2xl font-semibold text-foreground mb-4">Safety Analysis</h2>
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                  <div className="text-center p-4 bg-danger/5 rounded-xl">
-                    <div className="text-2xl font-bold text-danger mb-1">
+                  <div className="text-center p-4 bg-red-500/20 rounded-xl border border-red-200">
+                    <div className="text-2xl font-bold text-red-700 mb-1">
                       {safetyRating.components.crimeRating.toFixed(1)}
                     </div>
-                    <div className="text-sm text-foreground">Crime Rating</div>
+                    <div className="text-sm text-red-600">Crime Rating</div>
                   </div>
-                  <div className="text-center p-4 bg-primary/5 rounded-xl">
-                    <div className="text-2xl font-bold text-primary mb-1">
+                  <div className="text-center p-4 bg-blue-500/20 rounded-xl border border-blue-200">
+                    <div className="text-2xl font-bold text-blue-700 mb-1">
                       {safetyRating.components.demographicRating.toFixed(1)}
                     </div>
-                    <div className="text-sm text-foreground">Demographics</div>
+                    <div className="text-sm text-blue-600">Demographics</div>
                   </div>
-                  <div className="text-center p-4 bg-warning/5 rounded-xl">
-                    <div className="text-2xl font-bold text-warning mb-1">
+                  <div className="text-center p-4 bg-green-500/20 rounded-xl border border-green-200">
+                    <div className="text-2xl font-bold text-green-700 mb-1">
                       {safetyRating.components.neighborhoodRating.toFixed(1)}
                     </div>
-                    <div className="text-sm text-foreground">Neighborhood</div>
+                    <div className="text-sm text-green-600">Neighborhood</div>
                   </div>
-                  <div className="text-center p-4 bg-success/5 rounded-xl">
-                    <div className="text-2xl font-bold text-success mb-1">
+                  <div className="text-center p-4 bg-purple-500/20 rounded-xl border border-purple-200">
+                    <div className="text-2xl font-bold text-purple-700 mb-1">
                       {safetyRating.components.trendRating.toFixed(1)}
                     </div>
-                    <div className="text-sm text-foreground">Trends</div>
+                    <div className="text-sm text-purple-600">Trends</div>
                   </div>
                 </div>
                 <div className="mt-4 p-4 bg-muted/30 rounded-xl">
@@ -327,7 +327,7 @@ export default function SuburbDetailPage() {
             )}
 
             {/* Census Data Availability */}
-            <div className="bg-white rounded-2xl shadow-lg border border-border p-6">
+            <div className="bg-gray-50 rounded-2xl shadow-lg border border-gray-200 p-6">
               <h2 className="text-2xl font-semibold text-foreground mb-4">Data Availability</h2>
               <div className="space-y-4">
                 <div className="flex items-center justify-between p-4 bg-muted/30 rounded-xl">
@@ -374,7 +374,7 @@ export default function SuburbDetailPage() {
 
             {/* Demographics & Data Visualization */}
             {(censusData || safetyRating) && (
-              <div className="bg-white rounded-2xl shadow-lg border border-border p-6">
+              <div className="bg-gray-50 rounded-2xl shadow-lg border border-gray-200 p-6">
                 <h2 className="text-2xl font-semibold text-foreground mb-6">Demographics & Analysis</h2>
 
                 {/* Economic Indicators */}
@@ -502,7 +502,7 @@ export default function SuburbDetailPage() {
           {/* Sidebar */}
           <div className="space-y-8">
             {/* Quick Actions */}
-            <div className="bg-white rounded-2xl shadow-lg border border-border p-6">
+            <div className="bg-gray-50 rounded-2xl shadow-lg border border-gray-200 p-6">
               <h2 className="text-2xl font-semibold text-foreground mb-4">Quick Actions</h2>
               <div className="space-y-3">
                 <Link
@@ -528,7 +528,7 @@ export default function SuburbDetailPage() {
             </div>
 
             {/* Location Info */}
-            <div className="bg-white rounded-2xl shadow-lg border border-border p-6">
+            <div className="bg-gray-50 rounded-2xl shadow-lg border border-gray-200 p-6">
               <h2 className="text-2xl font-semibold text-foreground mb-4">Location Details</h2>
               <div className="space-y-4">
                 <div>
@@ -555,7 +555,7 @@ export default function SuburbDetailPage() {
             </div>
 
             {/* Related Suburbs */}
-            <div className="bg-white rounded-2xl shadow-lg border border-border p-6">
+            <div className="bg-gray-50 rounded-2xl shadow-lg border border-gray-200 p-6">
               <h2 className="text-2xl font-semibold text-foreground mb-4">Explore More</h2>
               <div className="space-y-3">
                 <Link
