@@ -207,19 +207,22 @@ export default function SuburbsPage() {
                     <h3 className="text-lg font-semibold text-foreground truncate">
                       {suburb.sal_name}
                     </h3>
-                    <span className={`px-2 py-1 text-xs rounded-full ${
-                      suburb.classification_type === 'Urban' ? 'bg-primary/10 text-primary' :
-                      suburb.classification_type === 'Suburban' ? 'bg-success/10 text-success' :
-                      suburb.classification_type === 'Remote' ? 'bg-warning/10 text-warning' :
-                      suburb.classification_type === 'Mining' ? 'bg-danger/10 text-danger' :
-                      'bg-muted text-muted-foreground'
+                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${
+                      suburb.classification_type === 'Urban' ? 'bg-blue-100 text-blue-700 border border-blue-200' :
+                      suburb.classification_type === 'Suburban' ? 'bg-green-100 text-green-700 border border-green-200' :
+                      suburb.classification_type === 'Remote' ? 'bg-orange-100 text-orange-700 border border-orange-200' :
+                      suburb.classification_type === 'Mining' ? 'bg-red-100 text-red-700 border border-red-200' :
+                      suburb.classification_type === 'Coastal' ? 'bg-cyan-100 text-cyan-700 border border-cyan-200' :
+                      suburb.classification_type === 'Regional Town' ? 'bg-purple-100 text-purple-700 border border-purple-200' :
+                      suburb.classification_type === 'Rural' ? 'bg-yellow-100 text-yellow-700 border border-yellow-200' :
+                      'bg-gray-100 text-gray-700 border border-gray-200'
                     }`}>
                       {suburb.classification_type}
                     </span>
                   </div>
 
                   <div className="space-y-2 mb-4">
-                    <div className="flex items-center text-sm text-muted-foreground">
+                    <div className="flex items-center text-sm text-gray-600">
                       <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -228,7 +231,7 @@ export default function SuburbsPage() {
                     </div>
 
                     {suburb.economic_base && suburb.economic_base.length > 0 && (
-                      <div className="flex items-center text-sm text-muted-foreground">
+                      <div className="flex items-center text-sm text-gray-600">
                         <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0V6a2 2 0 012 2v6a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2V6" />
                         </svg>

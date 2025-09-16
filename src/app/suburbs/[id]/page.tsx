@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
+import { DemographicChart, EconomicTile, SafetyBreakdown } from '@/components/charts/DemographicChart'
 
 interface WASuburb {
   sal_code: string
@@ -27,12 +28,38 @@ interface SafetyRating {
   }
 }
 
+interface CensusData {
+  medianAge: number
+  medianHouseholdIncome: number
+  unemploymentRate: number
+  educationLevel: {
+    bachelor: number
+    postgraduate: number
+    trade: number
+    highSchool: number
+    other: number
+  }
+  householdComposition: {
+    couples: number
+    families: number
+    singles: number
+    group: number
+  }
+  dwellingTypes: {
+    houses: number
+    apartments: number
+    townhouses: number
+    other: number
+  }
+}
+
 export default function SuburbDetailPage() {
   const params = useParams()
   const suburbId = params.id as string
 
   const [suburb, setSuburb] = useState<WASuburb | null>(null)
   const [safetyRating, setSafetyRating] = useState<SafetyRating | null>(null)
+  const [censusData, setCensusData] = useState<CensusData | null>(null)
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -55,18 +82,34 @@ export default function SuburbDetailPage() {
           const suburbInfo = suburbData.data
           setSuburb(suburbInfo)
 
-          // Fetch safety rating
-          try {
-            const safetyResponse = await fetch(`/api/safety?action=suburb&sal_code=${suburbId}`)
-            if (safetyResponse.ok) {
-              const safetyData = await safetyResponse.json()
-              if (safetyData.success && safetyData.data) {
-                setSafetyRating(safetyData.data)
-              }
-            }
-          } catch (safetyError) {
-            console.warn('Safety rating not available:', safetyError)
+          // Fetch safety rating and census data in parallel
+          const promises = []
+
+          // Safety rating
+          promises.push(
+            fetch(`/api/safety?action=suburb&sal_code=${suburbId}`)
+              .then(res => res.ok ? res.json() : null)
+              .then(data => data?.success ? data.data : null)
+              .catch(() => null)
+          )
+
+          // Census data (use SA2 mappings from suburb)
+          if (suburbInfo.sa2_mappings && suburbInfo.sa2_mappings.length > 0) {
+            const sa2Code = suburbInfo.sa2_mappings[0].sa2_code
+            promises.push(
+              fetch(`/api/abs/census?sa2_code=${sa2Code}&year=2021`)
+                .then(res => res.ok ? res.json() : null)
+                .then(data => data?.success ? data.data : null)
+                .catch(() => null)
+            )
+          } else {
+            promises.push(Promise.resolve(null))
           }
+
+          const [safetyData, censusApiData] = await Promise.all(promises)
+
+          if (safetyData) setSafetyRating(safetyData)
+          if (censusApiData) setCensusData(censusApiData)
         } else {
           throw new Error('Suburb not found')
         }
@@ -328,6 +371,132 @@ export default function SuburbDetailPage() {
                 </div>
               </div>
             </div>
+
+            {/* Demographics & Data Visualization */}
+            {(censusData || safetyRating) && (
+              <div className="bg-white rounded-2xl shadow-lg border border-border p-6">
+                <h2 className="text-2xl font-semibold text-foreground mb-6">Demographics & Analysis</h2>
+
+                {/* Economic Indicators */}
+                {censusData && (
+                  <div className="mb-8">
+                    <h3 className="text-lg font-medium text-foreground mb-4">Economic Indicators</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                      <EconomicTile
+                        title="Median Income"
+                        value={censusData.medianHouseholdIncome}
+                        format="currency"
+                        color="green"
+                        icon={
+                          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
+                          </svg>
+                        }
+                      />
+                      <EconomicTile
+                        title="Unemployment"
+                        value={censusData.unemploymentRate}
+                        format="percentage"
+                        color="orange"
+                        subtitle={censusData.unemploymentRate < 5 ? "Low" : censusData.unemploymentRate < 8 ? "Average" : "High"}
+                        icon={
+                          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                          </svg>
+                        }
+                      />
+                      <EconomicTile
+                        title="Median Age"
+                        value={censusData.medianAge}
+                        format="number"
+                        color="blue"
+                        subtitle="years"
+                        icon={
+                          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                        }
+                      />
+                      <EconomicTile
+                        title="Houses"
+                        value={censusData.dwellingTypes.houses}
+                        format="percentage"
+                        color="purple"
+                        subtitle="vs apartments"
+                        icon={
+                          <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                          </svg>
+                        }
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {/* Charts Section */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                  {censusData && (
+                    <>
+                      <DemographicChart
+                        title="Education Levels"
+                        data={[
+                          censusData.educationLevel.bachelor,
+                          censusData.educationLevel.postgraduate,
+                          censusData.educationLevel.trade,
+                          censusData.educationLevel.highSchool,
+                          censusData.educationLevel.other
+                        ]}
+                        labels={['Bachelor+', 'Postgraduate', 'Trade Cert', 'High School', 'Other']}
+                        color="blue"
+                        type="horizontal"
+                      />
+
+                      <DemographicChart
+                        title="Household Types"
+                        data={[
+                          censusData.householdComposition.couples,
+                          censusData.householdComposition.families,
+                          censusData.householdComposition.singles,
+                          censusData.householdComposition.group
+                        ]}
+                        labels={['Couples', 'Families', 'Singles', 'Group']}
+                        color="green"
+                        type="horizontal"
+                      />
+
+                      <DemographicChart
+                        title="Dwelling Types"
+                        data={[
+                          censusData.dwellingTypes.houses,
+                          censusData.dwellingTypes.apartments,
+                          censusData.dwellingTypes.townhouses,
+                          censusData.dwellingTypes.other
+                        ]}
+                        labels={['Houses', 'Apartments', 'Townhouses', 'Other']}
+                        color="purple"
+                        type="vertical"
+                      />
+                    </>
+                  )}
+
+                  {safetyRating && (
+                    <SafetyBreakdown safetyRating={safetyRating} />
+                  )}
+                </div>
+
+                {!censusData && (
+                  <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-6 text-center">
+                    <svg className="w-12 h-12 text-yellow-500 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                    <h4 className="font-medium text-yellow-800 mb-2">Census Data Not Available</h4>
+                    <p className="text-sm text-yellow-700">
+                      Detailed demographic charts will appear when census data is available for this suburb.
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Sidebar */}
