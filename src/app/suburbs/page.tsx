@@ -199,31 +199,31 @@ export default function SuburbsPage() {
 
         {/* Suburbs Grid */}
         {!isLoading && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mb-8">
             {currentSuburbs.map((suburb) => (
-              <div key={suburb.sal_code} className="bg-white rounded-xl shadow-lg border border-border overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
+              <div key={suburb.sal_code} className="bg-white rounded-2xl shadow-lg border border-border overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 hover:border-primary/30">
                 <div className="p-6">
                   <div className="flex justify-between items-start mb-4">
                     <h3 className="text-lg font-semibold text-foreground truncate">
                       {suburb.sal_name}
                     </h3>
-                    <span className={`px-2 py-1 text-xs font-medium rounded-full ${
-                      suburb.classification_type === 'Urban' ? 'bg-blue-100 text-blue-700 border border-blue-200' :
-                      suburb.classification_type === 'Suburban' ? 'bg-green-100 text-green-700 border border-green-200' :
-                      suburb.classification_type === 'Remote' ? 'bg-orange-100 text-orange-700 border border-orange-200' :
-                      suburb.classification_type === 'Mining' ? 'bg-red-100 text-red-700 border border-red-200' :
-                      suburb.classification_type === 'Coastal' ? 'bg-cyan-100 text-cyan-700 border border-cyan-200' :
-                      suburb.classification_type === 'Regional Town' ? 'bg-purple-100 text-purple-700 border border-purple-200' :
-                      suburb.classification_type === 'Rural' ? 'bg-yellow-100 text-yellow-700 border border-yellow-200' :
-                      'bg-gray-100 text-gray-700 border border-gray-200'
+                    <span className={`px-3 py-1.5 text-xs font-semibold rounded-full ${
+                      suburb.classification_type === 'Urban' ? 'bg-blue-500 text-white' :
+                      suburb.classification_type === 'Suburban' ? 'bg-green-500 text-white' :
+                      suburb.classification_type === 'Remote' ? 'bg-orange-500 text-white' :
+                      suburb.classification_type === 'Mining' ? 'bg-red-500 text-white' :
+                      suburb.classification_type === 'Coastal' ? 'bg-cyan-500 text-white' :
+                      suburb.classification_type === 'Regional Town' ? 'bg-purple-500 text-white' :
+                      suburb.classification_type === 'Rural' ? 'bg-yellow-600 text-white' :
+                      'bg-gray-500 text-white'
                     }`}>
                       {suburb.classification_type}
                     </span>
                   </div>
 
-                  <div className="space-y-2 mb-4">
-                    <div className="flex items-center text-sm text-gray-600">
-                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="space-y-3 mb-5">
+                    <div className="flex items-center text-sm text-muted-foreground">
+                      <svg className="w-4 h-4 mr-3 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                       </svg>
@@ -231,20 +231,24 @@ export default function SuburbsPage() {
                     </div>
 
                     {suburb.economic_base && suburb.economic_base.length > 0 && (
-                      <div className="flex items-center text-sm text-gray-600">
-                        <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <div className="flex items-center text-sm text-muted-foreground">
+                        <svg className="w-4 h-4 mr-3 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0V6a2 2 0 012 2v6a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2V6" />
                         </svg>
-                        {suburb.economic_base.slice(0, 2).join(', ')}
-                        {suburb.economic_base.length > 2 && ` +${suburb.economic_base.length - 2} more`}
+                        <span className="font-medium">
+                          {suburb.economic_base.slice(0, 2).join(', ')}
+                          {suburb.economic_base.length > 2 && ` +${suburb.economic_base.length - 2} more`}
+                        </span>
                       </div>
                     )}
 
-                    <div className="flex items-center text-sm text-foreground">
-                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div className="flex items-center text-sm">
+                      <svg className="w-4 h-4 mr-3 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                       </svg>
-                      {suburb.sa2_mappings.length > 0 ? 'Census data available' : 'Limited data'}
+                      <span className={suburb.sa2_mappings.length > 0 ? 'text-success font-medium' : 'text-warning font-medium'}>
+                        {suburb.sa2_mappings.length > 0 ? 'Census data available' : 'Limited data'}
+                      </span>
                     </div>
                   </div>
 

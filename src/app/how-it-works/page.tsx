@@ -318,7 +318,33 @@ export default function HowItWorksPage() {
                 ))}
               </div>
 
-              <div className="mt-8 bg-green-50 border border-green-200 rounded-xl p-6">
+              <div className="mt-8 bg-orange-50 border border-orange-200 rounded-xl p-6">
+                <h4 className="font-semibold text-orange-800 mb-3">Crime Data Allocation Methodology</h4>
+                <p className="text-sm text-orange-700 mb-4">
+                  Since WA Police data is provided by district (not individual suburbs), we use sophisticated mapping to allocate crime statistics:
+                </p>
+                <div className="space-y-3 text-sm">
+                  <div className="bg-orange-100 p-3 rounded-lg">
+                    <strong className="text-orange-800">1. Primary Mapping:</strong>
+                    <p className="text-orange-700">Use existing police_district field from suburb data when available</p>
+                  </div>
+                  <div className="bg-orange-100 p-3 rounded-lg">
+                    <strong className="text-orange-800">2. Geographic Estimation:</strong>
+                    <p className="text-orange-700">Coordinate-based assignment using latitude/longitude boundaries:</p>
+                    <ul className="list-disc list-inside mt-1 text-orange-600">
+                      <li>Perth Metro: lat -32.5° to -31.4°, lng 115.5° to 116.2°</li>
+                      <li>Regional mapping: lat/lng ranges for 15 districts</li>
+                      <li>Name pattern matching (e.g., "fremantle" → Fremantle District)</li>
+                    </ul>
+                  </div>
+                  <div className="bg-orange-100 p-3 rounded-lg">
+                    <strong className="text-orange-800">3. District Crime Profiles:</strong>
+                    <p className="text-orange-700">Each district has characteristic crime rates based on real WA Police data patterns</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6 bg-green-50 border border-green-200 rounded-xl p-6">
                 <h4 className="font-semibold text-green-800 mb-3">Final Calculation Formula</h4>
                 <div className="font-mono text-sm text-green-700 bg-green-100 p-4 rounded-lg">
                   Overall Rating = (Crime × 0.50) + (Demographics × 0.25) + (Neighborhood × 0.15) + (Trends × 0.10)
@@ -382,15 +408,19 @@ export default function HowItWorksPage() {
                   <div className="space-y-3">
                     <div>
                       <span className="text-sm font-medium text-gray-700">Coverage:</span>
-                      <p className="text-sm text-gray-600">2007-2025 comprehensive crime statistics</p>
+                      <p className="text-sm text-gray-600">2007-2025 comprehensive crime statistics by police district</p>
                     </div>
                     <div>
-                      <span className="text-sm font-medium text-gray-700">Includes:</span>
-                      <p className="text-sm text-gray-600">40+ offense categories, severity weighting, historical trends</p>
+                      <span className="text-sm font-medium text-gray-700">Allocation Method:</span>
+                      <p className="text-sm text-gray-600">District-to-suburb mapping using geographic coordinates and name patterns</p>
                     </div>
                     <div>
                       <span className="text-sm font-medium text-gray-700">Districts:</span>
-                      <p className="text-sm text-gray-600">All 15 WA Police Districts with spatial mapping</p>
+                      <p className="text-sm text-gray-600">15 WA Police Districts mapped to 1,701 suburbs via spatial analysis</p>
+                    </div>
+                    <div>
+                      <span className="text-sm font-medium text-gray-700">Data Processing:</span>
+                      <p className="text-sm text-gray-600">40+ offense categories with severity weighting and historical trends</p>
                     </div>
                   </div>
                 </div>

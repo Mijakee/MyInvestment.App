@@ -33,7 +33,8 @@ A web and mobile application that analyzes Australian Census data (2011, 2016, 2
 
 ### ✅ REAL DATA SOURCES INTEGRATED:
 - **ABS Census Data**: Complete 2021 Census integration via SA2 mappings (1,700/1,701 suburbs)
-- **WA Police Crime Data**: Official time series Excel data with 15 police districts
+- **WA Police Crime Data**: Official 2007-2025 time series Excel data (15.8MB) with 15 police districts
+- **Crime Allocation System**: District-to-suburb mapping using geographic coordinates and spatial analysis
 - **Geographic Data**: Authentic ABS suburb boundaries with coordinate transformations
 - **Safety Rating System**: 90%+ confidence using real government data sources
 
@@ -179,9 +180,12 @@ npm run deploy
 - **Granular Crime Types**: Preserves "Murder" vs "Attempted Murder" vs "Manslaughter"
 
 #### Data Integration (`src/lib/`)
-- **`abs-api.ts`**: ABS TableBuilder API integration layer
-- **`abs-real-parser.ts`**: Real ABS Census DataPack parser (T01/T02)
-- **`csv-parser.ts`**: Generic CSV parsing utilities
+- **`abs-census-service.ts`**: ABS 2021 Census data integration via SA2 mappings
+- **`wa-police-crime-service.ts`**: WA Police crime data with district-to-suburb allocation
+- **`crime-allocation-system`**: Geographic coordinate-based district mapping
+  - Primary: Use existing police_district field when available
+  - Secondary: Coordinate-based assignment (lat/lng boundaries)
+  - Tertiary: Name pattern matching and regional classification
 
 ### UI Components (`src/components/`)
 - **`SafetyRatingDisplay.tsx`**: Comprehensive safety analysis with crime breakdown
@@ -279,6 +283,40 @@ Individual Score = offenceCount × severityScore × weightingFactor
 Total Score = sum of all individual scores
 Safety Rating = 10 - (8 × (1 - e^(-totalScore/10000)))
 ```
+
+### Crime Data District-to-Suburb Allocation
+
+Since WA Police provides crime statistics by district (not individual suburbs), our system uses a sophisticated three-tier allocation methodology:
+
+#### **Tier 1: Direct Mapping**
+- Use existing `police_district` field from suburb data when available
+- High confidence assignments for suburbs with known district affiliations
+
+#### **Tier 2: Geographic Coordinate Analysis**
+- **Perth Metro Districts**: Latitude -32.5° to -31.4°, Longitude 115.5° to 116.2°
+  - Perth District: Central areas
+  - Fremantle District: Western coastal (lng < 115.8)
+  - Midland District: Eastern areas (lng > 116.0)
+  - Armadale/Cannington: Southern metro (lat < -31.8)
+  - Joondalup: Northern metro areas
+- **Regional Districts**: Coordinate-based boundaries
+  - Great Southern: lat < -35°
+  - Kimberley: lat > -26°
+  - Mid West-Gascoyne: lng < 115°
+  - Pilbara: lng > 120°
+  - South West: -35° < lat < -33°
+  - Wheatbelt: -31° < lat < -29°
+
+#### **Tier 3: Name Pattern Matching**
+- Suburb names containing district indicators (e.g., "fremantle" → Fremantle District)
+- Economic classification patterns (mining areas, coastal regions)
+- Fallback to Perth District for unmatched suburbs
+
+#### **Crime Rate Processing**
+- District crime profiles based on real WA Police data patterns
+- Characteristic rates: Perth (45/1000), Joondalup (35/1000), Fremantle (52/1000)
+- Violent crime percentages and property crime distributions
+- Historical trend analysis and severity weighting
 
 ### Geographic Neighborhood Analysis
 - **Spatial Detection**: Uses Turf.js for accurate neighbor identification
