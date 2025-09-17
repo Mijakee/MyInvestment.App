@@ -10,7 +10,7 @@ export async function GET(request: NextRequest) {
     switch (action) {
       case 'list': {
         const page = Math.max(parseInt(searchParams.get('page') || '1'), 1)
-        const limit = Math.min(parseInt(searchParams.get('limit') || '50'), 1000)
+        const limit = Math.min(parseInt(searchParams.get('limit') || '50'), 2000)
         const state = searchParams.get('state')
         const classification = searchParams.get('classification')
         const economicBase = searchParams.get('economicBase')

@@ -1,0 +1,450 @@
+{
+  "metadata": {
+    "source": "WA Police Force Crime Time Series Data",
+    "processing_date": "2025-09-16T00:00:00.000Z",
+    "total_districts": 5,
+    "districts": [
+      "Offence Data time series",
+      "January 2007",
+      "Current quarter",
+      "Homicide",
+      "Homicide Total"
+    ],
+    "data_years": [
+      2023
+    ],
+    "note": "Processed from official WA Police Excel time series data"
+  },
+  "districts": {
+    "Offence Data time series": [
+      {
+        "police_district": "Offence Data time series",
+        "data_source": "Armadale District",
+        "total_offenses": 0,
+        "year": 2023,
+        "offense_categories": {},
+        "raw_record": {
+          "row_index": 0,
+          "Region =": "Title =",
+          "Armadale District": "Offence Data time series",
+          "total_offenses": 0,
+          "offense_breakdown": {}
+        }
+      },
+      {
+        "police_district": "Offence Data time series",
+        "data_source": "Cannington District",
+        "total_offenses": 0,
+        "year": 2023,
+        "offense_categories": {},
+        "raw_record": {
+          "row_index": 0,
+          "Region =": "Title =",
+          "Cannington District": "Offence Data time series",
+          "total_offenses": 0,
+          "offense_breakdown": {}
+        }
+      },
+      {
+        "police_district": "Offence Data time series",
+        "data_source": "Fremantle District",
+        "total_offenses": 0,
+        "year": 2023,
+        "offense_categories": {},
+        "raw_record": {
+          "row_index": 0,
+          "Region =": "Title =",
+          "Fremantle District": "Offence Data time series",
+          "total_offenses": 0,
+          "offense_breakdown": {}
+        }
+      },
+      {
+        "police_district": "Offence Data time series",
+        "data_source": "Joondalup District",
+        "total_offenses": 0,
+        "year": 2023,
+        "offense_categories": {},
+        "raw_record": {
+          "row_index": 0,
+          "Region =": "Title =",
+          "Joondalup District": "Offence Data time series",
+          "total_offenses": 0,
+          "offense_breakdown": {}
+        }
+      },
+      {
+        "police_district": "Offence Data time series",
+        "data_source": "Mandurah District",
+        "total_offenses": 0,
+        "year": 2023,
+        "offense_categories": {},
+        "raw_record": {
+          "row_index": 0,
+          "Region =": "Title =",
+          "Mandurah District": "Offence Data time series",
+          "total_offenses": 0,
+          "offense_breakdown": {}
+        }
+      },
+      {
+        "police_district": "Offence Data time series",
+        "data_source": "Midland District",
+        "total_offenses": 0,
+        "year": 2023,
+        "offense_categories": {},
+        "raw_record": {
+          "row_index": 0,
+          "Region =": "Title =",
+          "Midland District": "Offence Data time series",
+          "total_offenses": 0,
+          "offense_breakdown": {}
+        }
+      }
+    ],
+    "January 2007": [
+      {
+        "police_district": "January 2007",
+        "data_source": "Armadale District",
+        "total_offenses": 0,
+        "year": 2023,
+        "offense_categories": {},
+        "raw_record": {
+          "row_index": 1,
+          "Region =": "Series start =",
+          "Armadale District": "January 2007",
+          "total_offenses": 0,
+          "offense_breakdown": {}
+        }
+      },
+      {
+        "police_district": "January 2007",
+        "data_source": "Cannington District",
+        "total_offenses": 0,
+        "year": 2023,
+        "offense_categories": {},
+        "raw_record": {
+          "row_index": 1,
+          "Region =": "Series start =",
+          "Cannington District": "January 2007",
+          "total_offenses": 0,
+          "offense_breakdown": {}
+        }
+      },
+      {
+        "police_district": "January 2007",
+        "data_source": "Fremantle District",
+        "total_offenses": 0,
+        "year": 2023,
+        "offense_categories": {},
+        "raw_record": {
+          "row_index": 1,
+          "Region =": "Series start =",
+          "Fremantle District": "January 2007",
+          "total_offenses": 0,
+          "offense_breakdown": {}
+        }
+      },
+      {
+        "police_district": "January 2007",
+        "data_source": "Joondalup District",
+        "total_offenses": 0,
+        "year": 2023,
+        "offense_categories": {},
+        "raw_record": {
+          "row_index": 1,
+          "Region =": "Series start =",
+          "Joondalup District": "January 2007",
+          "total_offenses": 0,
+          "offense_breakdown": {}
+        }
+      },
+      {
+        "police_district": "January 2007",
+        "data_source": "Mandurah District",
+        "total_offenses": 0,
+        "year": 2023,
+        "offense_categories": {},
+        "raw_record": {
+          "row_index": 1,
+          "Region =": "Series start =",
+          "Mandurah District": "January 2007",
+          "total_offenses": 0,
+          "offense_breakdown": {}
+        }
+      },
+      {
+        "police_district": "January 2007",
+        "data_source": "Midland District",
+        "total_offenses": 0,
+        "year": 2023,
+        "offense_categories": {},
+        "raw_record": {
+          "row_index": 1,
+          "Region =": "Series start =",
+          "Midland District": "January 2007",
+          "total_offenses": 0,
+          "offense_breakdown": {}
+        }
+      }
+    ],
+    "Current quarter": [
+      {
+        "police_district": "Current quarter",
+        "data_source": "Armadale District",
+        "total_offenses": 0,
+        "year": 2023,
+        "offense_categories": {},
+        "raw_record": {
+          "row_index": 2,
+          "Region =": "Series end =",
+          "Armadale District": "Current quarter",
+          "total_offenses": 0,
+          "offense_breakdown": {}
+        }
+      },
+      {
+        "police_district": "Current quarter",
+        "data_source": "Cannington District",
+        "total_offenses": 0,
+        "year": 2023,
+        "offense_categories": {},
+        "raw_record": {
+          "row_index": 2,
+          "Region =": "Series end =",
+          "Cannington District": "Current quarter",
+          "total_offenses": 0,
+          "offense_breakdown": {}
+        }
+      },
+      {
+        "police_district": "Current quarter",
+        "data_source": "Fremantle District",
+        "total_offenses": 0,
+        "year": 2023,
+        "offense_categories": {},
+        "raw_record": {
+          "row_index": 2,
+          "Region =": "Series end =",
+          "Fremantle District": "Current quarter",
+          "total_offenses": 0,
+          "offense_breakdown": {}
+        }
+      },
+      {
+        "police_district": "Current quarter",
+        "data_source": "Joondalup District",
+        "total_offenses": 0,
+        "year": 2023,
+        "offense_categories": {},
+        "raw_record": {
+          "row_index": 2,
+          "Region =": "Series end =",
+          "Joondalup District": "Current quarter",
+          "total_offenses": 0,
+          "offense_breakdown": {}
+        }
+      },
+      {
+        "police_district": "Current quarter",
+        "data_source": "Mandurah District",
+        "total_offenses": 0,
+        "year": 2023,
+        "offense_categories": {},
+        "raw_record": {
+          "row_index": 2,
+          "Region =": "Series end =",
+          "Mandurah District": "Current quarter",
+          "total_offenses": 0,
+          "offense_breakdown": {}
+        }
+      },
+      {
+        "police_district": "Current quarter",
+        "data_source": "Midland District",
+        "total_offenses": 0,
+        "year": 2023,
+        "offense_categories": {},
+        "raw_record": {
+          "row_index": 2,
+          "Region =": "Series end =",
+          "Midland District": "Current quarter",
+          "total_offenses": 0,
+          "offense_breakdown": {}
+        }
+      }
+    ],
+    "Homicide": [
+      {
+        "police_district": "Homicide",
+        "data_source": "Armadale District",
+        "total_offenses": 0,
+        "year": 2023,
+        "offense_categories": {},
+        "raw_record": {
+          "row_index": 5,
+          "Region =": "nan",
+          "Armadale District": "Homicide",
+          "total_offenses": 0,
+          "offense_breakdown": {}
+        }
+      },
+      {
+        "police_district": "Homicide",
+        "data_source": "Cannington District",
+        "total_offenses": 0,
+        "year": 2023,
+        "offense_categories": {},
+        "raw_record": {
+          "row_index": 5,
+          "Region =": "nan",
+          "Cannington District": "Homicide",
+          "total_offenses": 0,
+          "offense_breakdown": {}
+        }
+      },
+      {
+        "police_district": "Homicide",
+        "data_source": "Fremantle District",
+        "total_offenses": 0,
+        "year": 2023,
+        "offense_categories": {},
+        "raw_record": {
+          "row_index": 5,
+          "Region =": "nan",
+          "Fremantle District": "Homicide",
+          "total_offenses": 0,
+          "offense_breakdown": {}
+        }
+      },
+      {
+        "police_district": "Homicide",
+        "data_source": "Joondalup District",
+        "total_offenses": 0,
+        "year": 2023,
+        "offense_categories": {},
+        "raw_record": {
+          "row_index": 5,
+          "Region =": "nan",
+          "Joondalup District": "Homicide",
+          "total_offenses": 0,
+          "offense_breakdown": {}
+        }
+      },
+      {
+        "police_district": "Homicide",
+        "data_source": "Mandurah District",
+        "total_offenses": 0,
+        "year": 2023,
+        "offense_categories": {},
+        "raw_record": {
+          "row_index": 5,
+          "Region =": "nan",
+          "Mandurah District": "Homicide",
+          "total_offenses": 0,
+          "offense_breakdown": {}
+        }
+      },
+      {
+        "police_district": "Homicide",
+        "data_source": "Midland District",
+        "total_offenses": 0,
+        "year": 2023,
+        "offense_categories": {},
+        "raw_record": {
+          "row_index": 5,
+          "Region =": "nan",
+          "Midland District": "Homicide",
+          "total_offenses": 0,
+          "offense_breakdown": {}
+        }
+      }
+    ],
+    "Homicide Total": [
+      {
+        "police_district": "Homicide Total",
+        "data_source": "Armadale District",
+        "total_offenses": 0,
+        "year": 2023,
+        "offense_categories": {},
+        "raw_record": {
+          "row_index": 6,
+          "Region =": "Month and Year",
+          "Armadale District": "Homicide Total",
+          "total_offenses": 0,
+          "offense_breakdown": {}
+        }
+      },
+      {
+        "police_district": "Homicide Total",
+        "data_source": "Cannington District",
+        "total_offenses": 0,
+        "year": 2023,
+        "offense_categories": {},
+        "raw_record": {
+          "row_index": 6,
+          "Region =": "Month and Year",
+          "Cannington District": "Homicide Total",
+          "total_offenses": 0,
+          "offense_breakdown": {}
+        }
+      },
+      {
+        "police_district": "Homicide Total",
+        "data_source": "Fremantle District",
+        "total_offenses": 0,
+        "year": 2023,
+        "offense_categories": {},
+        "raw_record": {
+          "row_index": 6,
+          "Region =": "Month and Year",
+          "Fremantle District": "Homicide Total",
+          "total_offenses": 0,
+          "offense_breakdown": {}
+        }
+      },
+      {
+        "police_district": "Homicide Total",
+        "data_source": "Joondalup District",
+        "total_offenses": 0,
+        "year": 2023,
+        "offense_categories": {},
+        "raw_record": {
+          "row_index": 6,
+          "Region =": "Month and Year",
+          "Joondalup District": "Homicide Total",
+          "total_offenses": 0,
+          "offense_breakdown": {}
+        }
+      },
+      {
+        "police_district": "Homicide Total",
+        "data_source": "Mandurah District",
+        "total_offenses": 0,
+        "year": 2023,
+        "offense_categories": {},
+        "raw_record": {
+          "row_index": 6,
+          "Region =": "Month and Year",
+          "Mandurah District": "Homicide Total",
+          "total_offenses": 0,
+          "offense_breakdown": {}
+        }
+      },
+      {
+        "police_district": "Homicide Total",
+        "data_source": "Midland District",
+        "total_offenses": 0,
+        "year": 2023,
+        "offense_categories": {},
+        "raw_record": {
+          "row_index": 6,
+          "Region =": "Month and Year",
+          "Midland District": "Homicide Total",
+          "total_offenses": 0,
+          "offense_breakdown": {}
+        }
+      }
+    ]
+  }
+}
