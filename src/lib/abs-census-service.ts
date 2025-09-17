@@ -4,6 +4,7 @@
  */
 
 import { waSuburbLoader } from './wa-suburb-loader'
+import { realCSVParser, type RealCensusData } from './real-csv-parser'
 import type { CensusData } from '../types'
 
 interface ABSApiResponse {
@@ -99,7 +100,7 @@ class ABSCensusService {
   }
 
   /**
-   * Get Census data for SA2 code from ABS API or cache
+   * Get Census data for SA2 code from real ABS data or cache
    */
   private async getSA2CensusData(sa2Code: string, year: number = 2021): Promise<SA2CensusData | null> {
     const cacheKey = `${sa2Code}-${year}`
@@ -109,19 +110,45 @@ class ABSCensusService {
       return this.cached2021Data.get(cacheKey)!
     }
 
-    // For now, generate synthetic data based on SA2 characteristics
-    // TODO: Replace with real ABS API calls when data sources are configured
-    const syntheticData = this.generateSyntheticSA2Data(sa2Code, year)
+    try {
+      // Use real CSV parser to get data
+      const realData = await realCSVParser.getCensusDataForSAL(sa2Code)
 
-    // Cache the result
-    this.cached2021Data.set(cacheKey, syntheticData)
+      if (realData) {
+        const sa2Data = this.convertRealDataToSA2Format(realData)
+        this.cached2021Data.set(cacheKey, sa2Data)
+        return sa2Data
+      }
+    } catch (error) {
+      console.error(`Error loading real ABS data for ${sa2Code}:`, error)
+      return null
+    }
 
-    return syntheticData
+    // No fallback to synthetic data - return null if real data unavailable
+    return null
   }
 
   /**
-   * Generate realistic synthetic Census data based on SA2 characteristics
-   * This provides a working baseline until real ABS API is fully configured
+   * Convert real ABS data format to SA2CensusData format
+   */
+  private convertRealDataToSA2Format(realData: RealCensusData): SA2CensusData {
+    return {
+      sa2_code: realData.salCode,
+      population: realData.population,
+      medianAge: realData.medianAge,
+      medianHouseholdIncome: realData.medianHouseholdIncome,
+      medianRent: realData.medianRent,
+      medianMortgage: realData.medianMortgage,
+      unemploymentRate: realData.unemploymentRate,
+      educationLevel: realData.educationLevel,
+      householdComposition: realData.householdComposition,
+      dwellingTypes: realData.dwellingTypes
+    }
+  }
+
+  /**
+   * DEPRECATED: Legacy synthetic data generation (no longer used)
+   * Kept for reference only - system now uses 100% real data
    */
   private generateSyntheticSA2Data(sa2Code: string, year: number): SA2CensusData {
     // Use SA2 code to create deterministic but realistic data

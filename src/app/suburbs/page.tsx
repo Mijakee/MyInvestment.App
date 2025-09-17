@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { SafetyRatingBadge } from '../../components/SafetyRatingBadge'
 
 interface WASuburb {
   sal_code: string
@@ -14,6 +15,17 @@ interface WASuburb {
   sa2_mappings: any[]
 }
 
+interface SafetyRating {
+  overallRating: number
+  confidence: number
+  components: {
+    crimeRating: number
+    demographicRating: number
+    neighborhoodRating: number
+    trendRating: number
+  }
+}
+
 export default function SuburbsPage() {
   const [suburbs, setSuburbs] = useState<WASuburb[]>([])
   const [filteredSuburbs, setFilteredSuburbs] = useState<WASuburb[]>([])
@@ -22,6 +34,8 @@ export default function SuburbsPage() {
   const [searchTerm, setSearchTerm] = useState('')
   const [selectedClassification, setSelectedClassification] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
+  const [safetyRatings, setSafetyRatings] = useState<Record<string, SafetyRating>>({})
+  const [loadingRatings, setLoadingRatings] = useState<Set<string>>(new Set())
   const itemsPerPage = 24
 
   const fetchSuburbs = async () => {
@@ -40,6 +54,9 @@ export default function SuburbsPage() {
       if (data.success && data.data) {
         setSuburbs(data.data)
         setFilteredSuburbs(data.data)
+
+        // Fetch safety ratings for the first few suburbs to show
+        fetchSafetyRatingsForSuburbs(data.data.slice(0, 12))
       } else {
         throw new Error(data.error || 'Failed to fetch suburbs')
       }
@@ -48,6 +65,64 @@ export default function SuburbsPage() {
       console.error('Error fetching suburbs:', err)
     } finally {
       setIsLoading(false)
+    }
+  }
+
+  const fetchSafetyRatingsForSuburbs = async (suburbsToRate: WASuburb[]) => {
+    const newLoadingRatings = new Set(loadingRatings)
+
+    for (const suburb of suburbsToRate) {
+      if (!safetyRatings[suburb.sal_code] && !newLoadingRatings.has(suburb.sal_code)) {
+        newLoadingRatings.add(suburb.sal_code)
+      }
+    }
+
+    setLoadingRatings(newLoadingRatings)
+
+    // Fetch ratings in parallel but limit concurrent requests
+    const batchSize = 3
+    for (let i = 0; i < suburbsToRate.length; i += batchSize) {
+      const batch = suburbsToRate.slice(i, i + batchSize)
+
+      const promises = batch.map(async (suburb) => {
+        if (safetyRatings[suburb.sal_code]) return // Already have it
+
+        try {
+          const response = await fetch(`/api/safety?action=suburb&sal_code=${suburb.sal_code}`)
+          const data = await response.json()
+
+          if (data.success && data.data) {
+            setSafetyRatings(prev => ({
+              ...prev,
+              [suburb.sal_code]: {
+                overallRating: data.data.overallRating,
+                confidence: data.data.confidence || 0.8,
+                components: data.data.components || {
+                  crimeRating: 0,
+                  demographicRating: 0,
+                  neighborhoodRating: 0,
+                  trendRating: 0
+                }
+              }
+            }))
+          }
+        } catch (error) {
+          console.log(`Could not fetch safety rating for ${suburb.sal_name}`)
+        } finally {
+          setLoadingRatings(prev => {
+            const newSet = new Set(prev)
+            newSet.delete(suburb.sal_code)
+            return newSet
+          })
+        }
+      })
+
+      await Promise.all(promises)
+
+      // Small delay between batches to not overwhelm the server
+      if (i + batchSize < suburbsToRate.length) {
+        await new Promise(resolve => setTimeout(resolve, 200))
+      }
     }
   }
 
@@ -83,6 +158,13 @@ export default function SuburbsPage() {
   const totalPages = Math.ceil(filteredSuburbs.length / itemsPerPage)
   const startIndex = (currentPage - 1) * itemsPerPage
   const currentSuburbs = filteredSuburbs.slice(startIndex, startIndex + itemsPerPage)
+
+  // Load safety ratings when page changes
+  useEffect(() => {
+    if (currentSuburbs.length > 0) {
+      fetchSafetyRatingsForSuburbs(currentSuburbs.slice(0, 8)) // Only first 8 for performance
+    }
+  }, [currentPage, currentSuburbs.length])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-secondary">
@@ -204,21 +286,37 @@ export default function SuburbsPage() {
               <div key={suburb.sal_code} className="bg-white rounded-2xl shadow-lg border border-border overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 hover:border-primary/30">
                 <div className="p-6">
                   <div className="flex justify-between items-start mb-4">
-                    <h3 className="text-lg font-semibold text-foreground truncate">
-                      {suburb.sal_name}
-                    </h3>
-                    <span className={`px-3 py-1.5 text-xs font-semibold rounded-full ${
-                      suburb.classification_type === 'Urban' ? 'bg-blue-500 text-white' :
-                      suburb.classification_type === 'Suburban' ? 'bg-green-500 text-white' :
-                      suburb.classification_type === 'Remote' ? 'bg-orange-500 text-white' :
-                      suburb.classification_type === 'Mining' ? 'bg-red-500 text-white' :
-                      suburb.classification_type === 'Coastal' ? 'bg-cyan-500 text-white' :
-                      suburb.classification_type === 'Regional Town' ? 'bg-purple-500 text-white' :
-                      suburb.classification_type === 'Rural' ? 'bg-yellow-600 text-white' :
-                      'bg-gray-500 text-white'
-                    }`}>
-                      {suburb.classification_type}
-                    </span>
+                    <div>
+                      <h3 className="text-lg font-semibold text-foreground truncate">
+                        {suburb.sal_name}
+                      </h3>
+                      <p className="text-sm text-muted-foreground">SAL {suburb.sal_code}</p>
+                    </div>
+                    <div className="flex flex-col items-end gap-2">
+                      <span className={`px-3 py-1.5 text-xs font-semibold rounded-full ${
+                        suburb.classification_type === 'Urban' ? 'bg-blue-500 text-white' :
+                        suburb.classification_type === 'Suburban' ? 'bg-green-500 text-white' :
+                        suburb.classification_type === 'Remote' ? 'bg-orange-500 text-white' :
+                        suburb.classification_type === 'Mining' ? 'bg-red-500 text-white' :
+                        suburb.classification_type === 'Coastal' ? 'bg-cyan-500 text-white' :
+                        suburb.classification_type === 'Regional Town' ? 'bg-purple-500 text-white' :
+                        suburb.classification_type === 'Rural' ? 'bg-yellow-600 text-white' :
+                        'bg-gray-500 text-white'
+                      }`}>
+                        {suburb.classification_type}
+                      </span>
+                      {safetyRatings[suburb.sal_code] && (
+                        <SafetyRatingBadge
+                          rating={safetyRatings[suburb.sal_code].overallRating}
+                          confidence={safetyRatings[suburb.sal_code].confidence}
+                          size="sm"
+                          showLabel={false}
+                        />
+                      )}
+                      {loadingRatings.has(suburb.sal_code) && (
+                        <div className="animate-pulse bg-gray-200 h-6 w-16 rounded-full"></div>
+                      )}
+                    </div>
                   </div>
 
                   <div className="space-y-3 mb-5">

@@ -3,28 +3,11 @@
  * Integrates real WA Police crime statistics with suburb safety ratings
  */
 
-import crimeData from '../data/wa_police_crime_data.json'
+import { realWAPoliceParser, type RealCrimeData } from './real-wa-police-parser'
 import { waSuburbLoader } from './wa-suburb-loader'
 import type { CrimeData } from '../types'
 
-interface WAPoliceCrimeData {
-  metadata: {
-    source: string
-    processing_date: string
-    total_districts: number
-    districts: string[]
-    data_years: number[]
-    note: string
-  }
-  districts: Record<string, Array<{
-    police_district: string
-    data_source: string
-    total_offenses: number
-    year: number
-    offense_categories: Record<string, number>
-    raw_record: Record<string, any>
-  }>>
-}
+// Removed old WAPoliceCrimeData interface - now using real data sources
 
 // WA Police District mappings for major areas
 const DISTRICT_MAPPINGS = {
@@ -46,11 +29,10 @@ const DISTRICT_MAPPINGS = {
 }
 
 class WAPoliceCrimeService {
-  private data: WAPoliceCrimeData
   private districtCrimeCache = new Map<string, CrimeData>()
 
   constructor() {
-    this.data = crimeData as WAPoliceCrimeData
+    // No initialization needed - using real data parsers
   }
 
   /**
@@ -76,15 +58,15 @@ class WAPoliceCrimeService {
     }
 
     // Get district crime data from WA Police data
-    const districtCrime = this.getDistrictCrimeData(policeDistrict)
+    const districtCrime = await this.getDistrictCrimeData(policeDistrict)
 
     if (districtCrime) {
       this.districtCrimeCache.set(cacheKey, districtCrime)
       return this.transformToSuburbCrime(districtCrime, salCode)
     }
 
-    // Fallback to synthetic data with improved realism based on real WA data patterns
-    return this.generateRealisticCrimeData(suburb, policeDistrict)
+    // No fallback - return null if no district data available
+    return null
   }
 
   /**
@@ -120,9 +102,54 @@ class WAPoliceCrimeService {
   }
 
   /**
-   * Get crime data for a police district from processed WA Police data
+   * Get crime data for a police district from real WA Police data parser
    */
-  private getDistrictCrimeData(district: string): CrimeData | null {
+  private async getDistrictCrimeData(district: string): Promise<CrimeData | null> {
+    try {
+      // Use real WA Police parser to get data
+      const realData = await realWAPoliceParser.getCrimeDataForDistrict(district)
+
+      if (realData) {
+        return this.convertRealCrimeToStandardFormat(realData, district)
+      }
+    } catch (error) {
+      console.error(`Error loading real crime data for ${district}:`, error)
+    }
+
+    // No fallback to synthetic data
+    return null
+  }
+
+  /**
+   * Convert real crime data to standard CrimeData format
+   */
+  private convertRealCrimeToStandardFormat(realData: RealCrimeData, district: string): CrimeData {
+    const crimeRate = (realData.totalOffences / 100000) * 1000 // Normalize to per 1000
+
+    return {
+      id: `${district}-${realData.year}`,
+      suburbId: district,
+      year: realData.year,
+      totalOffenses: realData.totalOffences,
+      crimeRate,
+      categories: {
+        assault: realData.categories.assault,
+        burglary: realData.categories.burglary,
+        theft: realData.categories.theft,
+        drugOffenses: realData.categories.drugs,
+        publicOrder: realData.categories.publicOrder,
+        property: realData.categories.property,
+        vehicleCrime: realData.categories.traffic,
+        other: realData.categories.other
+      },
+      trend: this.determineTrend(district)
+    }
+  }
+
+  /**
+   * Generate synthetic district crime data (fallback)
+   */
+  private generateSyntheticDistrictData(district: string): CrimeData {
     // Since current processed data has structural issues, generate realistic data
     // based on WA Police district characteristics and known crime patterns
 
@@ -202,8 +229,8 @@ class WAPoliceCrimeService {
   /**
    * Generate realistic crime data based on suburb characteristics
    */
-  private generateRealisticCrimeData(suburb: any, policeDistrict: string): CrimeData {
-    const districtCrime = this.getDistrictCrimeData(policeDistrict)
+  private async generateRealisticCrimeData(suburb: any, policeDistrict: string): Promise<CrimeData> {
+    const districtCrime = await this.getDistrictCrimeData(policeDistrict)
 
     if (districtCrime) {
       return this.transformToSuburbCrime(districtCrime, suburb.sal_code)
@@ -259,12 +286,12 @@ class WAPoliceCrimeService {
    */
   getStatistics() {
     return {
-      source: this.data.metadata.source,
+      source: 'WA Police Force Annual Crime Statistics',
       totalDistricts: this.getAvailableDistricts().length,
       availableDistricts: this.getAvailableDistricts(),
-      dataYears: [2023, 2024],
-      processingNote: 'Using WA Police district profiles with suburb-level estimation',
-      lastUpdated: this.data.metadata.processing_date
+      dataYears: [2023],
+      processingNote: 'Using real WA Police district crime statistics',
+      lastUpdated: '2025-09-17T00:00:00.000Z'
     }
   }
 

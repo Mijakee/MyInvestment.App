@@ -90,3 +90,18 @@ scripts/data/geographic/*.shx
 
 # Processing output files (too large)
 scripts/src/
+
+# Large ABS Census data files (government data - too large for git)
+src/data/2021\ Census\ GCP\ All\ Geographies\ for\ WA/
+src/data/abs-real/
+src/data/**/*.csv
+src/data/**/*.xlsx
+src/data/**/*.xls
+
+# WA Police crime data files (official government data)
+src/data/wa-police/
+src/data/**/*.pdf
+
+# Processed suburb CSV files (large datasets)
+src/data/wa_suburbs_*.csv
+src/data/processed/
