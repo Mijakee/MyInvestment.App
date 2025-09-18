@@ -9,14 +9,15 @@ export async function GET(request: NextRequest) {
 
     switch (action) {
       case 'analyze': {
-        const allSuburbs = waSuburbLoader.getAllSuburbs()
-        const analysis = analyzeReclassification(allSuburbs)
+        const analysis = waSuburbLoader.applyNewClassification()
 
         return NextResponse.json({
           success: true,
           data: {
-            total_suburbs: allSuburbs.length,
-            analysis,
+            total_suburbs: analysis.total,
+            summary: analysis.summary,
+            total_changes: analysis.changes.length,
+            unchanged: analysis.unchanged,
             sample_changes: analysis.changes.slice(0, 20) // First 20 changes as sample
           }
         })
@@ -44,10 +45,26 @@ export async function GET(request: NextRequest) {
         })
       }
 
+      case 'apply': {
+        // Actually update the classifications in the suburb data
+        const result = waSuburbLoader.updateClassifications()
+
+        return NextResponse.json({
+          success: true,
+          data: {
+            message: 'Classifications successfully updated!',
+            updated_suburbs: result.updated,
+            total_suburbs: result.total,
+            final_distribution: result.summary,
+            note: 'All suburb classifications have been updated using 80km boundary system'
+          }
+        })
+      }
+
       default:
         return NextResponse.json({
           success: false,
-          error: 'Invalid action. Use: analyze, preview'
+          error: 'Invalid action. Use: analyze, preview, apply'
         }, { status: 400 })
     }
 

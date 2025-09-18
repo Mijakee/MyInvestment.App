@@ -6,6 +6,7 @@
 import { waSuburbLoader, type EnhancedSuburb } from './wa-suburb-loader'
 import { absCensusService } from './abs-census-service'
 import { waPoliceCrimeService } from './wa-police-crime-service'
+// Transport accessibility moved to separate convenience service
 import type { CensusData, CrimeData } from '../types'
 
 export interface SafetyRating {
@@ -13,10 +14,10 @@ export interface SafetyRating {
   suburbName: string
   overallRating: number // 1-10 scale
   components: {
-    crimeRating: number      // 50% weight
+    crimeRating: number      // 50% weight (restored)
     demographicRating: number // 25% weight
     neighborhoodRating: number // 15% weight
-    trendRating: number       // 10% weight
+    trendRating: number       // 10% weight (restored)
   }
   confidence: number // 0-1 scale
   lastUpdated: Date
@@ -66,10 +67,10 @@ class SafetyRatingService {
 
       // Weighted overall rating (total = 100%)
       const overallRating = (
-        crimeRating * 0.5 +        // 50% crime impact
-        demographicRating * 0.25 + // 25% demographics
+        crimeRating * 0.50 +        // 50% crime impact (primary factor)
+        demographicRating * 0.25 +  // 25% demographics
         neighborhoodRating * 0.15 + // 15% neighborhood
-        trendRating * 0.1          // 10% trends
+        trendRating * 0.10          // 10% trends
       )
 
       // Calculate confidence based on data availability
@@ -305,10 +306,10 @@ class SafetyRatingService {
   }): number {
     let confidence = 0
 
-    if (availability.hasCensusData) confidence += 0.4  // 40% for census data
-    if (availability.hasCrimeData) confidence += 0.3   // 30% for crime data
-    if (availability.hasNeighborData) confidence += 0.2 // 20% for neighborhood data
-    if (availability.hasHistoricalData) confidence += 0.1 // 10% for historical trends
+    if (availability.hasCensusData) confidence += 0.45    // 45% for census data
+    if (availability.hasCrimeData) confidence += 0.35     // 35% for crime data
+    if (availability.hasNeighborData) confidence += 0.15  // 15% for neighborhood data
+    if (availability.hasHistoricalData) confidence += 0.05 // 5% for historical trends
 
     return Math.max(0.3, confidence) // Minimum 30% confidence
   }

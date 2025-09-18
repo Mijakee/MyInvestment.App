@@ -12,54 +12,32 @@ export interface ReclassifiedSuburb {
 }
 
 /**
- * Reclassify suburbs based on improved logic
+ * Reclassify suburbs based on distance from Perth CBD
  */
 export function reclassifySuburb(suburb: any): 'Urban' | 'Suburban' | 'Rural' {
   const lat = suburb.latitude
   const lng = suburb.longitude
-  const name = suburb.sal_name.toLowerCase()
 
-  // Perth CBD and immediate surrounds (Urban)
-  // Very tight radius around Perth CBD
+  // Perth CBD coordinates
   const perthCBD = { lat: -31.9523, lng: 115.8613 }
+
+  // Calculate distance from Perth CBD in kilometers
   const distanceFromCBD = Math.sqrt(
     Math.pow((lat - perthCBD.lat) * 111, 2) +
     Math.pow((lng - perthCBD.lng) * 111 * Math.cos(lat * Math.PI / 180), 2)
   )
 
-  // Urban: Within 8km of Perth CBD + specific urban centers
-  if (distanceFromCBD <= 8) {
-    if (name.includes('perth') || name.includes('northbridge') ||
-        name.includes('subiaco') || name.includes('west perth') ||
-        name.includes('east perth') || name.includes('leederville')) {
-      return 'Urban'
-    }
-  }
-
-  // Suburban: Perth Metropolitan Area
-  // Defined as the greater Perth area within reasonable commuting distance
-  const isInPerthMetro = (
-    lat >= -32.5 && lat <= -31.0 &&  // North-South bounds of Perth metro
-    lng >= 115.4 && lng <= 116.3     // East-West bounds of Perth metro
-  ) ||
-  // Major suburban centers by name
-  name.includes('joondalup') || name.includes('rockingham') ||
-  name.includes('mandurah') || name.includes('fremantle') ||
-  name.includes('armadale') || name.includes('midland') ||
-  name.includes('wanneroo') || name.includes('cockburn') ||
-  name.includes('stirling') || name.includes('canning') ||
-  name.includes('swan') || name.includes('gosnells') ||
-  name.includes('belmont') || name.includes('bayswater') ||
-  name.includes('kalamunda') || name.includes('mundaring')
-
-  if (isInPerthMetro) {
-    // Within metro area but not urban core = Suburban
+  // Pure distance-based classification
+  if (distanceFromCBD <= 10) {
+    // Urban: Within 10km of Perth CBD (core metropolitan area)
+    return 'Urban'
+  } else if (distanceFromCBD <= 80) {
+    // Suburban: 10-80km from Perth CBD (metropolitan area including coastal cities like Fremantle, Joondalup, Rockingham)
     return 'Suburban'
+  } else {
+    // Rural: Beyond 80km from Perth CBD (regional towns, mining areas, agricultural areas)
+    return 'Rural'
   }
-
-  // Everything else is Rural
-  // This includes: Remote areas, Mining towns, Regional towns, Coastal areas, Agricultural areas
-  return 'Rural'
 }
 
 /**
@@ -68,7 +46,6 @@ export function reclassifySuburb(suburb: any): 'Urban' | 'Suburban' | 'Rural' {
 export function getClassificationReason(suburb: any, newClassification: string): string {
   const lat = suburb.latitude
   const lng = suburb.longitude
-  const name = suburb.sal_name.toLowerCase()
 
   const perthCBD = { lat: -31.9523, lng: 115.8613 }
   const distanceFromCBD = Math.sqrt(
@@ -78,15 +55,11 @@ export function getClassificationReason(suburb: any, newClassification: string):
 
   switch (newClassification) {
     case 'Urban':
-      return `Within ${distanceFromCBD.toFixed(1)}km of Perth CBD, urban commercial/residential core`
+      return `Within 10km of Perth CBD (${distanceFromCBD.toFixed(1)}km) - Urban core`
     case 'Suburban':
-      return `Perth metropolitan area, residential suburb (${distanceFromCBD.toFixed(1)}km from CBD)`
+      return `10-80km from Perth CBD (${distanceFromCBD.toFixed(1)}km) - Metropolitan area incl. coastal cities`
     case 'Rural':
-      if (distanceFromCBD > 50) {
-        return `Regional/remote area (${distanceFromCBD.toFixed(0)}km from Perth)`
-      } else {
-        return `Rural/semi-rural area near Perth (${distanceFromCBD.toFixed(1)}km from CBD)`
-      }
+      return `Beyond 80km from Perth CBD (${distanceFromCBD.toFixed(0)}km) - Regional/rural area`
     default:
       return 'Unknown classification'
   }

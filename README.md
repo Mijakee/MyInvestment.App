@@ -1,6 +1,6 @@
 # MyInvestmentApp - Australian Property Safety Analysis
 
-🎉 **PRODUCTION READY** - A comprehensive web application that analyzes real Australian Census data (2021) and WA Police crime statistics to generate neighborhood-influenced safety ratings for 1,701 WA suburbs, helping property investors and homebuyers make informed decisions.
+🎉 **PRODUCTION READY** - A comprehensive dual-metric system that analyzes real Australian Census data (2021) and WA Police crime statistics to generate both safety ratings and convenience scores for 1,701 WA suburbs, providing holistic investment guidance for property investors and homebuyers.
 
 ## 🎯 Key Features
 
@@ -14,9 +14,12 @@
 - **Spatial Detection**: Uses Turf.js for accurate neighbor identification within specified distances
 - **Distance-Weighted Influence**: Exponential decay function for realistic neighborhood impact
 - **SA2-Police District Mapping**: 88.9% coverage correspondence between Census areas and crime jurisdictions
-- **Multi-Factor Algorithm**: 50% crime + 25% neighbors + 15% demographics + 10% trends
+### 🔒📍 Dual Metric System (CORRECTED ARCHITECTURE)
+- **Safety Rating**: Crime (50%) + Demographics (25%) + Neighborhood (15%) + Trends (10%)
+- **Convenience Score**: Transport (40%) + Shopping (25%) + Education (20%) + Recreation (15%)
+- **Combined Investment Index**: Safety (60%) + Convenience (40%) = Overall Investment Score
 
-### 📊 Real-Time Safety Ratings
+### 📊 Real-Time Ratings & Scoring
 - **100% Real Data**: Complete integration of ABS 2021 Census and WA Police crime statistics
 - **1,701 WA Suburbs**: Full state-wide coverage from Perth metro to remote mining towns
 - **Interactive Frontend**: Complete suburb browsing, search, filtering, and detailed analysis pages
@@ -42,8 +45,14 @@ open http://localhost:3000
 
 ## 📋 API Endpoints
 
-### Safety Rating APIs
-- **`GET /api/safety?action=suburb&sal_code={code}`** - Real-time suburb safety rating calculation
+### Core Rating APIs
+- **`GET /api/safety?sal_code={code}`** - Pure safety rating (Crime + Demographics + Neighborhood + Trends)
+- **`GET /api/convenience?action=calculate&sal_code={code}`** - Convenience score (Transport + Shopping + Education + Recreation)
+- **`GET /api/convenience?action=combined&sal_code={code}`** - Combined investment recommendation (Safety 60% + Convenience 40%)
+
+### System Testing APIs
+- **`GET /api/convenience?action=test`** - Test dual metric system across multiple location types
+- **`GET /api/transport-accessibility?action=convenience-preview`** - Shows correct architectural separation
 - **`GET /api/integration/test`** - Full system health check (returns 100% health score)
 
 ### Data APIs

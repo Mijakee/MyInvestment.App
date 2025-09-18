@@ -80,6 +80,7 @@ Thumbs.db
 logs/
 *.log
 lerna-debug.log*
+dev_output.log
 
 # Large geographic data files (exceeds GitHub 100MB limit)
 scripts/data/geographic/SAL_2021_AUST_GDA2020/

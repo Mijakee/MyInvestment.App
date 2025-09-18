@@ -99,6 +99,107 @@ class WASuburbLoaderService {
   }
 
   /**
+   * Apply new distance-based classification to all suburbs (analysis only)
+   */
+  applyNewClassification(): { summary: any, changes: any[] } {
+    const perthCBD = { lat: -31.9523, lng: 115.8613 }
+
+    const summary = {
+      Urban: { current: 0, proposed: 0, changed: 0 },
+      Suburban: { current: 0, proposed: 0, changed: 0 },
+      Rural: { current: 0, proposed: 0, changed: 0 }
+    }
+
+    const changes: any[] = []
+    let unchanged = 0
+
+    for (const suburb of this.data.suburbs) {
+      const lat = suburb.latitude
+      const lng = suburb.longitude
+
+      // Calculate distance from Perth CBD
+      const distanceFromCBD = Math.sqrt(
+        Math.pow((lat - perthCBD.lat) * 111, 2) +
+        Math.pow((lng - perthCBD.lng) * 111 * Math.cos(lat * Math.PI / 180), 2)
+      )
+
+      // New classification logic
+      const newClass = distanceFromCBD <= 10 ? 'Urban' :
+                      distanceFromCBD <= 80 ? 'Suburban' : 'Rural'
+
+      const oldClass = suburb.classification_type
+
+      // Count current classifications
+      if (summary[oldClass as keyof typeof summary]) {
+        summary[oldClass as keyof typeof summary].current++
+      }
+
+      // Count proposed classifications
+      summary[newClass].proposed++
+
+      if (oldClass !== newClass) {
+        // Count changes
+        if (summary[oldClass as keyof typeof summary]) {
+          summary[oldClass as keyof typeof summary].changed++
+        }
+
+        changes.push({
+          sal_code: suburb.sal_code,
+          sal_name: suburb.sal_name,
+          old_classification: oldClass,
+          new_classification: newClass,
+          distance: Math.round(distanceFromCBD),
+          reason: `${Math.round(distanceFromCBD)}km from Perth CBD`
+        })
+      } else {
+        unchanged++
+      }
+    }
+
+    return { summary, changes, unchanged, total: this.data.suburbs.length }
+  }
+
+  /**
+   * Actually update the classification_type field for all suburbs
+   */
+  updateClassifications(): { updated: number, summary: any } {
+    const perthCBD = { lat: -31.9523, lng: 115.8613 }
+    let updated = 0
+
+    const summary = {
+      Urban: 0,
+      Suburban: 0,
+      Rural: 0
+    }
+
+    for (const suburb of this.data.suburbs) {
+      const lat = suburb.latitude
+      const lng = suburb.longitude
+
+      // Calculate distance from Perth CBD
+      const distanceFromCBD = Math.sqrt(
+        Math.pow((lat - perthCBD.lat) * 111, 2) +
+        Math.pow((lng - perthCBD.lng) * 111 * Math.cos(lat * Math.PI / 180), 2)
+      )
+
+      // New classification logic
+      const newClass = distanceFromCBD <= 10 ? 'Urban' :
+                      distanceFromCBD <= 80 ? 'Suburban' : 'Rural'
+
+      // Update if different
+      if (suburb.classification_type !== newClass) {
+        suburb.classification_type = newClass
+        updated++
+      }
+
+      // Count final classifications
+      summary[newClass]++
+    }
+
+    return { updated, summary, total: this.data.suburbs.length }
+  }
+
+  /**
    * Search suburbs by name (fuzzy matching)
    */
   searchSuburbsByName(name: string, limit: number = 10): EnhancedSuburb[] {

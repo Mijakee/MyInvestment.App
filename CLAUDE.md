@@ -178,7 +178,7 @@ npm run deploy
 #### Algorithm Features
 - **Individual Crime Scoring**: Each offence type has specific severity (1-100) and weighting (1.0-3.0)
 - **Neighborhood Influence**: Distance-weighted neighbor impact using exponential decay
-- **Multi-Factor Rating**: 50% crime + 25% neighbors + 15% demographics + 10% trends
+- **Multi-Factor Rating**: 50% crime + 25% demographics + 15% neighborhood + 10% trends
 - **Logarithmic Normalization**: Converts complex data to digestible 1-10 safety scale
 - **Granular Crime Types**: Preserves "Murder" vs "Attempted Murder" vs "Manslaughter"
 
@@ -216,15 +216,23 @@ npm run deploy
 
 ## API Endpoints
 
-### Safety Rating APIs
-- **`/api/safety/test`**: Single SA2 safety rating calculation with detailed breakdown
-- **`/api/safety/test-enhanced`**: Enhanced algorithm testing with granular crime data
-- **`/api/integration/test`**: Full pipeline integration testing (geographic + crime + census)
-- **`/api/test-suburbs`**: Test suburb data with SA2 codes and Police District mapping
+### Core Rating APIs
+- **`/api/safety`**: Pure safety rating calculation (Crime + Demographics + Neighborhood + Trends)
+- **`/api/convenience`**: Convenience scoring system (Transport + Shopping + Education + Recreation)
+  - `?action=calculate`: Individual convenience score
+  - `?action=combined`: Combined safety + convenience investment recommendation
+  - `?action=test`: System testing across multiple location types
 
-### Data APIs
+### Transport Accessibility APIs
+- **`/api/transport-accessibility`**: Public transport accessibility analysis (convenience component)
+  - `?action=calculate`: Transport score for specific coordinates
+  - `?action=test`: Multi-location transport accessibility testing
+  - `?action=convenience-preview`: Shows correct separation from safety ratings
+
+### Data and Testing APIs
+- **`/api/suburbs`**: WA suburb database access (1,701 suburbs)
 - **`/api/abs/test`**: ABS Census data testing and validation
-- **`/api/data/test`**: Generic data processing endpoints
+- **`/api/integration/test`**: Full pipeline integration testing
 
 ### Demo and Admin
 - **`/demo`**: Interactive demo showcasing neighborhood-influenced safety ratings
@@ -342,11 +350,44 @@ The application now has comprehensive WA state-wide coverage:
 - **🔶 Crime Data**: Parser ready for WA Police Excel files but currently using mock data
 - **✅ Infrastructure**: All parsing, analysis, and safety rating systems operational
 
+## Dual Metric System Architecture (CORRECTED)
+
+### ✅ **ARCHITECTURAL CORRECTION COMPLETED**
+The system now correctly implements the dual metric approach as originally specified:
+
+#### **🔒 Safety Rating System (1-10 scale)**
+- **Purpose**: Measures actual safety and security risk for investment decisions
+- **Algorithm**: Crime (50%) + Demographics (25%) + Neighborhood (15%) + Trends (10%)
+- **Data Sources**: WA Police crime statistics, ABS Census demographics, geographic analysis
+- **Use Cases**: Investment risk assessment, family safety considerations
+- **Service**: `src/lib/safety-rating-service.ts`
+- **API**: `/api/safety`
+
+#### **🚗 Convenience Score System (1-10 scale)**
+- **Purpose**: Measures daily life convenience and accessibility for lifestyle decisions
+- **Algorithm**: Transport (40%) + Shopping (25%) + Education (20%) + Recreation (15%)
+- **Data Sources**: WA PTA transport data, POI databases, school locations, recreation facilities
+- **Use Cases**: Lifestyle assessment, commuter-focused decisions, livability evaluation
+- **Service**: `src/lib/convenience-score-service.ts`
+- **API**: `/api/convenience`
+
+#### **📊 Combined Investment Index**
+- **Formula**: Safety Rating (60%) + Convenience Score (40%) = Overall Investment Score
+- **Recommendations**: Excellent/Good/Fair/Poor with color coding and detailed explanations
+- **Purpose**: Holistic property investment guidance combining both security and lifestyle factors
+- **API**: `/api/convenience?action=combined`
+
+### **Key Architectural Principles**
+1. **Separation of Concerns**: Safety and convenience are calculated independently
+2. **Domain-Specific Metrics**: Each system focuses on its core purpose without overlap
+3. **Flexible Weighting**: Users can prioritize safety vs convenience based on personal needs
+4. **Transparent Methodology**: All component scores and weightings are exposed in API responses
+
 ## IMMEDIATE NEXT STEPS (To Resume Development)
 
 ### 🔥 HIGH PRIORITY (1-2 days each)
 
-#### 1. **Real Data Integration**
+#### 1. **Real Data Integration** (UPDATED PRIORITY)
 - **ABS Census Data Connection**: Wire existing 2021 Census files in `/src/data/abs-real/` to safety calculations
   - Fix `censusDataAvailability: 0` issue in integration test
   - Connect demographic data to `calculateDemographicRating()` function
@@ -366,6 +407,7 @@ The application now has comprehensive WA state-wide coverage:
 - **Firebase Hosting**: Deploy with real data integration
 - **Custom Domain**: Set up production domain with SSL
 - **Performance Optimization**: CDN and caching for 32-suburb database
+
 
 ### 🚀 FUTURE ENHANCEMENTS
 
