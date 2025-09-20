@@ -81,6 +81,23 @@ export async function GET(request: NextRequest) {
         })
       }
 
+      case 'pta-direct': {
+        // Test WA PTA service directly
+        const { waptaTransportService } = await import('../../../lib/wa-pta-transport-service')
+
+        console.log(`Testing WA PTA service for coordinates: ${lat}, ${lng}`)
+        const ptaResult = await waptaTransportService.calculateTransportAccessibility(lat, lng, 5.0)
+
+        return NextResponse.json({
+          success: true,
+          data: {
+            location: { latitude: lat, longitude: lng },
+            pta_result: ptaResult,
+            note: 'Direct WA PTA transport service test'
+          }
+        })
+      }
+
       case 'convenience-preview': {
         // Show how transport accessibility integrates with convenience scoring (NOT safety)
         const demoSuburbs = [
@@ -143,7 +160,7 @@ export async function GET(request: NextRequest) {
       default:
         return NextResponse.json({
           success: false,
-          error: 'Invalid action. Use: calculate, test, convenience-preview'
+          error: 'Invalid action. Use: calculate, test, pta-direct, convenience-preview'
         }, { status: 400 })
     }
 

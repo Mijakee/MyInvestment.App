@@ -10,16 +10,21 @@ import {
   loadTransportStopsForArea,
   type TransportAccessibilityRating
 } from './transport-accessibility-service'
+import { waSchoolsService } from './wa-schools-service'
+import { waShoppingService } from './wa-shopping-service'
+import { waRecreationService } from './wa-recreation-service'
+import { waHealthService } from './wa-health-service'
 
 export interface ConvenienceScore {
   suburbCode: string
   suburbName: string
   overallScore: number // 1-10 scale
   components: {
-    transportAccessibility: number  // 40% weight
-    shoppingServices: number       // 25% weight
+    transportAccessibility: number  // 25% weight
+    shoppingServices: number       // 20% weight
     educationAccess: number        // 20% weight
-    recreationFacilities: number   // 15% weight
+    recreationFacilities: number   // 20% weight
+    medicalAccess: number          // 15% weight
   }
   confidence: number // 0-1 scale
   lastUpdated: Date
@@ -28,6 +33,7 @@ export interface ConvenienceScore {
     hasShoppingData: boolean
     hasEducationData: boolean
     hasRecreationData: boolean
+    hasMedicalData: boolean
   }
   transportDetails?: TransportAccessibilityRating
 }
@@ -63,13 +69,15 @@ class ConvenienceScoreService {
       const shoppingRating = await this.calculateShoppingServices(suburb)
       const educationRating = await this.calculateEducationAccess(suburb)
       const recreationRating = await this.calculateRecreationFacilities(suburb)
+      const medicalRating = await this.calculateMedicalAccess(suburb)
 
       // Weighted overall convenience score (total = 100%)
       const overallScore = (
-        transportRating.score * 0.40 +    // 40% transport accessibility
-        shoppingRating.score * 0.25 +     // 25% shopping & services
+        transportRating.score * 0.25 +    // 25% transport accessibility
+        shoppingRating.score * 0.20 +     // 20% shopping & services
         educationRating.score * 0.20 +    // 20% education access
-        recreationRating.score * 0.15     // 15% recreation facilities
+        recreationRating.score * 0.20 +   // 20% recreation facilities
+        medicalRating.score * 0.15        // 15% medical access
       )
 
       // Calculate confidence based on data availability
@@ -77,7 +85,8 @@ class ConvenienceScoreService {
         hasTransportData: transportRating.hasData,
         hasShoppingData: shoppingRating.hasData,
         hasEducationData: educationRating.hasData,
-        hasRecreationData: recreationRating.hasData
+        hasRecreationData: recreationRating.hasData,
+        hasMedicalData: medicalRating.hasData
       })
 
       const convenienceScore: ConvenienceScore = {
@@ -88,7 +97,8 @@ class ConvenienceScoreService {
           transportAccessibility: transportRating.score,
           shoppingServices: shoppingRating.score,
           educationAccess: educationRating.score,
-          recreationFacilities: recreationRating.score
+          recreationFacilities: recreationRating.score,
+          medicalAccess: medicalRating.score
         },
         confidence,
         lastUpdated: new Date(),
@@ -96,7 +106,8 @@ class ConvenienceScoreService {
           hasTransportData: transportRating.hasData,
           hasShoppingData: shoppingRating.hasData,
           hasEducationData: educationRating.hasData,
-          hasRecreationData: recreationRating.hasData
+          hasRecreationData: recreationRating.hasData,
+          hasMedicalData: medicalRating.hasData
         },
         transportDetails: transportRating.details || undefined
       }
@@ -110,7 +121,7 @@ class ConvenienceScoreService {
   }
 
   /**
-   * Calculate transport accessibility (40% of convenience score)
+   * Calculate transport accessibility (25% of convenience score)
    */
   private async calculateTransportAccessibility(suburb: EnhancedSuburb): Promise<{
     score: number,
@@ -150,96 +161,254 @@ class ConvenienceScoreService {
 
   /**
    * Calculate shopping and services accessibility (25% of convenience score)
+   * CORRECTED: Lower scores = MORE convenient, Higher scores = LESS convenient
    */
   private async calculateShoppingServices(suburb: EnhancedSuburb): Promise<{
     score: number,
     hasData: boolean
   }> {
-    // TODO: Implement shopping center and service accessibility analysis
-    // Data sources:
-    // - Shopping centers and malls within 10km
-    // - Supermarkets, pharmacies, banks within 5km
-    // - Medical facilities and government services
-    // - Postal services and other essential services
+    try {
+      // Import persistence service for caching
+      const { dataPersistenceService } = await import('./data-persistence-service')
 
-    // Mock calculation based on distance from Perth CBD and population density
-    if (!suburb.latitude || !suburb.longitude) {
-      return { score: 5.0, hasData: false }
-    }
+      // Check cache first
+      const cacheKey = `shopping_${suburb.latitude}_${suburb.longitude}`
+      const cachedData = await dataPersistenceService.getData<{ score: number; hasData: boolean }>(cacheKey)
+      if (cachedData) {
+        console.log(`Using cached shopping data for ${suburb.sal_name}`)
+        return cachedData
+      }
 
-    const distanceFromPerth = this.calculateDistance(
-      suburb.latitude,
-      suburb.longitude,
-      -31.9505, // Perth CBD lat
-      115.8605  // Perth CBD lng
-    ) / 1000 // Convert to km
+      // Get real shopping data using OpenStreetMap Nominatim API
+      const shoppingData = await waShoppingService.calculateShoppingAccessibility(
+        suburb.latitude,
+        suburb.longitude,
+        5.0
+      )
 
-    let shoppingScore: number
-    if (distanceFromPerth <= 15) {
-      shoppingScore = 8.5 - (distanceFromPerth / 15) * 2.5 // 8.5-6.0 for inner Perth
-    } else if (distanceFromPerth <= 50) {
-      shoppingScore = 6.0 - ((distanceFromPerth - 15) / 35) * 3.0 // 6.0-3.0 for suburban
-    } else {
-      shoppingScore = 3.0 - Math.min(2.0, (distanceFromPerth - 50) / 100) // 3.0-1.0 for regional
-    }
+      const result = {
+        score: shoppingData.shoppingScore,
+        hasData: shoppingData.facilityCount > 0
+      }
 
-    return {
-      score: Math.max(1, Math.min(10, shoppingScore)),
-      hasData: false // Mock data
+      // Cache the result
+      if (result.hasData) {
+        await dataPersistenceService.setData(cacheKey, result, 'api', 7 * 24 * 60 * 60 * 1000) // 7 days
+        console.log(`Cached shopping data for ${suburb.sal_name}: ${shoppingData.facilityCount} facilities, score ${result.score}`)
+      }
+
+      return result
+
+    } catch (error) {
+      console.error('Error calculating shopping services:', error)
+
+      // Fallback to distance-based calculation if API fails
+      if (!suburb.latitude || !suburb.longitude) {
+        return { score: 5.0, hasData: false }
+      }
+
+      const distanceFromPerth = this.calculateDistance(
+        suburb.latitude,
+        suburb.longitude,
+        -31.9505, // Perth CBD lat
+        115.8605  // Perth CBD lng
+      ) / 1000 // Convert to km
+
+      let shoppingScore: number
+      if (distanceFromPerth <= 15) {
+        shoppingScore = 1.5 + (distanceFromPerth / 15) * 2.5 // 1.5-4.0 for inner Perth
+      } else if (distanceFromPerth <= 50) {
+        shoppingScore = 4.0 + ((distanceFromPerth - 15) / 35) * 3.0 // 4.0-7.0 for suburban
+      } else {
+        shoppingScore = 7.0 + Math.min(2.0, (distanceFromPerth - 50) / 100) // 7.0-9.0 for regional
+      }
+
+      console.log(`Using fallback shopping calculation for ${suburb.sal_name}: distance ${distanceFromPerth.toFixed(1)}km, score ${shoppingScore.toFixed(1)}`)
+
+      return {
+        score: Math.max(1, Math.min(10, shoppingScore)),
+        hasData: false // Fallback calculation
+      }
     }
   }
 
   /**
-   * Calculate education access (20% of convenience score)
+   * Calculate education access (25% of convenience score)
+   * CORRECTED: Higher scores = MORE convenient education access, Lower scores = LESS convenient
    */
   private async calculateEducationAccess(suburb: EnhancedSuburb): Promise<{
     score: number,
     hasData: boolean
   }> {
-    // TODO: Implement education facility accessibility analysis
-    // Data sources:
-    // - Primary and secondary schools within reasonable distance
-    // - School quality ratings and ICSEA scores
-    // - Universities and TAFE campuses
-    // - Childcare centers and early learning facilities
+    try {
+      // Use real WA Department of Education schools data
+      const educationData = await waSchoolsService.calculateEducationScore(
+        suburb.latitude,
+        suburb.longitude
+      )
 
-    // Mock calculation based on population density (higher density = more schools)
-    const mockEducationScore = 5.0 + Math.random() * 3.0 // 5.0-8.0 range
+      return {
+        score: educationData.score,
+        hasData: educationData.hasData
+      }
+    } catch (error) {
+      console.warn(`Education data not available for ${suburb.sal_name}, using fallback`)
 
-    return {
-      score: Math.max(1, Math.min(10, mockEducationScore)),
-      hasData: false // Mock data
+      // Fallback calculation based on suburb type
+      let fallbackScore = 5.0 // Default moderate access
+
+      if (suburb.classification_type === 'Urban') {
+        fallbackScore = 7.5 // Urban areas typically have better education access
+      } else if (suburb.classification_type === 'Suburban') {
+        fallbackScore = 6.5 // Suburban areas have good access
+      } else if (suburb.classification_type === 'Remote') {
+        fallbackScore = 2.5 // Remote areas have limited access
+      }
+
+      return {
+        score: Math.max(1, Math.min(10, fallbackScore)),
+        hasData: false
+      }
     }
   }
 
   /**
-   * Calculate recreation facilities (15% of convenience score)
+   * Calculate recreation facilities (25% of convenience score)
+   * CORRECTED: Lower scores = MORE convenient recreation access, Higher scores = LESS convenient
    */
   private async calculateRecreationFacilities(suburb: EnhancedSuburb): Promise<{
     score: number,
     hasData: boolean
   }> {
-    // TODO: Implement recreation facility accessibility analysis
-    // Data sources:
-    // - Parks and reserves within walking distance
-    // - Sports facilities and gyms
-    // - Libraries and community centers
-    // - Entertainment venues and cultural facilities
+    try {
+      // Import persistence service for caching
+      const { dataPersistenceService } = await import('./data-persistence-service')
 
-    // Mock calculation based on proximity to coast and parks
-    if (!suburb.latitude || !suburb.longitude) {
-      return { score: 5.0, hasData: false }
+      // Check cache first
+      const cacheKey = `recreation_${suburb.latitude}_${suburb.longitude}`
+      const cachedData = await dataPersistenceService.getData<{ score: number; hasData: boolean }>(cacheKey)
+      if (cachedData) {
+        console.log(`Using cached recreation data for ${suburb.sal_name}`)
+        return cachedData
+      }
+
+      // Get real recreation data using OpenStreetMap Nominatim API
+      const recreationData = await waRecreationService.calculateRecreationAccessibility(
+        suburb.latitude,
+        suburb.longitude,
+        5.0
+      )
+
+      const result = {
+        score: recreationData.recreationScore,
+        hasData: recreationData.facilityCount > 0
+      }
+
+      // Cache the result
+      if (result.hasData) {
+        await dataPersistenceService.setData(cacheKey, result, 'api', 7 * 24 * 60 * 60 * 1000) // 7 days
+        console.log(`Cached recreation data for ${suburb.sal_name}: ${recreationData.facilityCount} facilities, score ${result.score}`)
+      }
+
+      return result
+
+    } catch (error) {
+      console.error('Error calculating recreation facilities:', error)
+
+      // Fallback to coastal proximity calculation if API fails
+      if (!suburb.latitude || !suburb.longitude) {
+        return { score: 5.0, hasData: false }
+      }
+
+      // Coastal proximity reduces score (better recreation access)
+      const distanceFromCoast = Math.abs(suburb.longitude - 115.75) * 111 // Rough coast longitude
+      const coastalBonus = Math.max(0, 2 - (distanceFromCoast / 10)) // Up to -2 points for coastal
+
+      const baseRecreationScore = 6.0 + Math.random() * 3.0 - coastalBonus
+
+      console.log(`Using fallback recreation calculation for ${suburb.sal_name}: coastal distance ${distanceFromCoast.toFixed(1)}km, score ${baseRecreationScore.toFixed(1)}`)
+
+      return {
+        score: Math.max(1, Math.min(10, baseRecreationScore)),
+        hasData: false // Fallback calculation
+      }
     }
+  }
 
-    // Bonus for coastal proximity (many WA suburbs value beach access)
-    const distanceFromCoast = Math.abs(suburb.longitude - 115.75) * 111 // Rough coast longitude
-    const coastalBonus = Math.max(0, 2 - (distanceFromCoast / 10)) // Up to +2 points for coastal
+  /**
+   * Calculate medical facility access (15% of convenience score)
+   * CORRECTED: Lower scores = MORE convenient medical access, Higher scores = LESS convenient
+   */
+  private async calculateMedicalAccess(suburb: EnhancedSuburb): Promise<{
+    score: number,
+    hasData: boolean
+  }> {
+    try {
+      // Import persistence service for caching
+      const { dataPersistenceService } = await import('./data-persistence-service')
 
-    const baseRecreationScore = 4.0 + Math.random() * 4.0 + coastalBonus
+      // Check cache first
+      const cacheKey = `medical_${suburb.latitude}_${suburb.longitude}`
+      const cachedData = await dataPersistenceService.getData<{ score: number; hasData: boolean }>(cacheKey)
+      if (cachedData) {
+        console.log(`Using cached medical data for ${suburb.sal_name}`)
+        return cachedData
+      }
 
-    return {
-      score: Math.max(1, Math.min(10, baseRecreationScore)),
-      hasData: false // Mock data
+      // Get real medical facility data using WA Health API + OpenStreetMap
+      const medicalData = await waHealthService.calculateHealthAccessibility(
+        suburb.latitude,
+        suburb.longitude,
+        10.0 // 10km radius for medical facilities
+      )
+
+      const result = {
+        score: medicalData.healthScore,
+        hasData: medicalData.facilityCount > 0
+      }
+
+      // Cache the result
+      if (result.hasData) {
+        await dataPersistenceService.setData(cacheKey, result, 'api', 7 * 24 * 60 * 60 * 1000) // 7 days
+        console.log(`Cached medical data for ${suburb.sal_name}: ${medicalData.facilityCount} facilities, score ${result.score}`)
+      }
+
+      return result
+
+    } catch (error) {
+      console.error('Error calculating medical access:', error)
+
+      // Fallback to distance-based calculation if API fails
+      if (!suburb.latitude || !suburb.longitude) {
+        return { score: 5.0, hasData: false }
+      }
+
+      // Distance from major medical centers
+      const distanceFromPerth = this.calculateDistance(
+        suburb.latitude,
+        suburb.longitude,
+        -31.9505, // Perth CBD (has major hospitals)
+        115.8605
+      ) / 1000 // Convert to km
+
+      let medicalScore: number
+      // Closer to Perth = lower score (better medical access)
+      if (distanceFromPerth <= 10) {
+        medicalScore = 1.5 + (distanceFromPerth / 10) * 2.0 // 1.5-3.5 for inner Perth
+      } else if (distanceFromPerth <= 30) {
+        medicalScore = 3.5 + ((distanceFromPerth - 10) / 20) * 2.5 // 3.5-6.0 for metro
+      } else if (distanceFromPerth <= 100) {
+        medicalScore = 6.0 + ((distanceFromPerth - 30) / 70) * 2.5 // 6.0-8.5 for regional
+      } else {
+        medicalScore = 8.5 + Math.min(1.5, (distanceFromPerth - 100) / 200) // 8.5-10.0 for remote
+      }
+
+      console.log(`Using fallback medical calculation for ${suburb.sal_name}: distance ${distanceFromPerth.toFixed(1)}km, score ${medicalScore.toFixed(1)}`)
+
+      return {
+        score: Math.max(1, Math.min(10, medicalScore)),
+        hasData: false // Fallback calculation
+      }
     }
   }
 
@@ -268,10 +437,10 @@ class ConvenienceScoreService {
   }): number {
     let confidence = 0
 
-    if (availability.hasTransportData) confidence += 0.40    // 40% for transport data
+    if (availability.hasTransportData) confidence += 0.25    // 25% for transport data
     if (availability.hasShoppingData) confidence += 0.25     // 25% for shopping data
-    if (availability.hasEducationData) confidence += 0.20    // 20% for education data
-    if (availability.hasRecreationData) confidence += 0.15   // 15% for recreation data
+    if (availability.hasEducationData) confidence += 0.25    // 25% for education data
+    if (availability.hasRecreationData) confidence += 0.25   // 25% for recreation data
 
     return Math.max(0.2, confidence) // Minimum 20% confidence
   }
@@ -289,21 +458,21 @@ class ConvenienceScoreService {
     // Weighted combination: 60% safety + 40% convenience
     const overallScore = (safetyRating * 0.60) + (convenienceScore.overallScore * 0.40)
 
-    // Generate recommendation level
+    // Generate recommendation level - CORRECTED for inverted scale
     let recommendation: CombinedSuburbRating['recommendation']
-    if (overallScore >= 8) {
+    if (overallScore <= 3) {
       recommendation = {
         level: 'Excellent',
         color: 'green',
         description: 'Outstanding investment opportunity with high safety and excellent convenience'
       }
-    } else if (overallScore >= 6.5) {
+    } else if (overallScore <= 4.5) {
       recommendation = {
         level: 'Good',
         color: 'blue',
         description: 'Solid investment choice with good safety and convenience balance'
       }
-    } else if (overallScore >= 5) {
+    } else if (overallScore <= 6) {
       recommendation = {
         level: 'Fair',
         color: 'yellow',

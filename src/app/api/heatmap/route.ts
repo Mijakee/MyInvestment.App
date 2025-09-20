@@ -5,7 +5,7 @@ export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams
     const action = searchParams.get('action') || 'optimized'
-    const metric = searchParams.get('metric') as 'safety' | 'convenience' | 'combined' || 'combined'
+    const metric = searchParams.get('metric') as 'crime' | 'convenience' | 'investment' || 'investment'
     const bounds = searchParams.get('bounds') // Format: "north,south,east,west"
 
     switch (action) {

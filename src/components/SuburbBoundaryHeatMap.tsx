@@ -8,8 +8,11 @@ interface HeatMapPoint {
   intensity: number
   suburbName?: string
   sal_code?: string
-  safetyRating?: number
+  crimeScore?: number
   convenienceScore?: number
+  investmentScore?: number
+  // Legacy fields for backward compatibility
+  safetyRating?: number
   combinedScore?: number
 }
 
@@ -25,20 +28,23 @@ interface HeatMapData {
   bounds: HeatMapBounds
   statistics: {
     totalSuburbs: number
-    averageSafety: number
+    averageCrime: number
     averageConvenience: number
-    averageCombined: number
+    averageInvestment: number
+    // Legacy fields
+    averageSafety?: number
+    averageCombined?: number
   }
 }
 
 interface SuburbBoundaryHeatMapProps {
-  metric?: 'safety' | 'convenience' | 'combined'
+  metric?: 'crime' | 'convenience' | 'investment'
   className?: string
   onSuburbClick?: (suburbName: string) => void
 }
 
 export default function SuburbBoundaryHeatMap({
-  metric = 'combined',
+  metric = 'investment',
   className = '',
   onSuburbClick
 }: SuburbBoundaryHeatMapProps) {
@@ -129,9 +135,9 @@ export default function SuburbBoundaryHeatMap({
 
           if (suburbData) {
             // Use actual scores instead of intensity for color coding
-            const score = metric === 'safety' ? (suburbData.safetyRating || 5) :
+            const score = metric === 'crime' ? (suburbData.crimeScore || suburbData.safetyRating || 5) :
                          metric === 'convenience' ? (suburbData.convenienceScore || 5) :
-                         (suburbData.combinedScore || 5)
+                         (suburbData.investmentScore || suburbData.combinedScore || 5)
 
             return {
               fillColor: getScoreColor(score, metric),
@@ -163,9 +169,9 @@ export default function SuburbBoundaryHeatMap({
             `
 
             if (suburbData) {
-              const score = metric === 'safety' ? (suburbData.safetyRating || 0) :
+              const score = metric === 'crime' ? (suburbData.crimeScore || suburbData.safetyRating || 0) :
                            metric === 'convenience' ? (suburbData.convenienceScore || 0) :
-                           (suburbData.combinedScore || 0)
+                           (suburbData.investmentScore || suburbData.combinedScore || 0)
 
               popupContent += `
                 <span class="text-sm text-gray-600">${getMetricLabel(metric)}: ${score.toFixed(1)}/10</span><br/>
@@ -202,9 +208,9 @@ export default function SuburbBoundaryHeatMap({
               mouseout: (e) => {
                 const layer = e.target
                 const suburbData = suburbName ? suburbDataMap.get(suburbName.toLowerCase()) : null
-                const score = suburbData ? (metric === 'safety' ? (suburbData.safetyRating || 5) :
+                const score = suburbData ? (metric === 'crime' ? (suburbData.crimeScore || suburbData.safetyRating || 5) :
                              metric === 'convenience' ? (suburbData.convenienceScore || 5) :
-                             (suburbData.combinedScore || 5)) : 5
+                             (suburbData.investmentScore || suburbData.combinedScore || 5)) : 5
                 layer.setStyle({
                   weight: 1,
                   color: '#ffffff',
@@ -260,9 +266,9 @@ export default function SuburbBoundaryHeatMap({
 
         if (suburbData) {
           // Use actual scores instead of intensity for color coding
-          const score = metric === 'safety' ? (suburbData.safetyRating || 5) :
+          const score = metric === 'crime' ? (suburbData.crimeScore || suburbData.safetyRating || 5) :
                        metric === 'convenience' ? (suburbData.convenienceScore || 5) :
-                       (suburbData.combinedScore || 5)
+                       (suburbData.investmentScore || suburbData.combinedScore || 5)
 
           layer.setStyle({
             fillColor: getScoreColor(score, metric),
@@ -273,9 +279,9 @@ export default function SuburbBoundaryHeatMap({
           })
 
           // Update popup content
-          const score_display = metric === 'safety' ? (suburbData.safetyRating || 0) :
+          const score_display = metric === 'crime' ? (suburbData.crimeScore || suburbData.safetyRating || 0) :
                                metric === 'convenience' ? (suburbData.convenienceScore || 0) :
-                               (suburbData.combinedScore || 0)
+                               (suburbData.investmentScore || suburbData.combinedScore || 0)
 
           const popupContent = `
             <div class="text-center">
@@ -315,51 +321,62 @@ export default function SuburbBoundaryHeatMap({
     // Create smooth color gradients based on actual scores (1-10 scale)
     const colors = getColorGradient(metric)
 
-    // Find the appropriate color based on score
-    if (score <= 2) return colors.veryLow
-    if (score <= 4) return colors.low
-    if (score <= 6) return colors.medium
-    if (score <= 8) return colors.high
-    return colors.veryHigh
+    if (metric === 'crime') {
+      // Crime: Higher scores = worse crime = darker colors
+      if (score >= 8) return colors.veryHigh  // Worst crime (8-10) - Dark red
+      if (score >= 6) return colors.high      // High crime (6-8)
+      if (score >= 4) return colors.medium    // Medium crime (4-6)
+      if (score >= 2) return colors.low       // Low crime (2-4)
+      return colors.veryLow                   // Very low crime (1-2) - Light red
+    } else {
+      // Convenience & Investment: Higher scores = better = darker colors
+      if (score >= 8) return colors.veryHigh  // Best (8-10) - Dark
+      if (score >= 6) return colors.high      // Good (6-8)
+      if (score >= 4) return colors.medium    // Average (4-6)
+      if (score >= 2) return colors.low       // Poor (2-4)
+      return colors.veryLow                   // Worst (1-2) - Light
+    }
   }
 
   const getColorGradient = (metric: string) => {
     switch (metric) {
-      case 'safety':
-        // Red gradient: light red (good/safe) to dark red (bad/unsafe)
+      case 'crime':
+        // RED GRADIENT FOR CRIME (Light = Low Crime, Dark = High Crime)
         return {
-          veryLow: '#8B0000',   // Dark red (very unsafe - score 1-2)
-          low: '#DC143C',       // Medium red (unsafe - score 3-4)
-          medium: '#FF6B6B',    // Light red (average - score 5-6)
-          high: '#FFA0A0',      // Very light red (safe - score 7-8)
-          veryHigh: '#FFD6D6'   // Pale red (very safe - score 9-10)
+          veryLow: '#fed7d7',   // Light red (low crime - scores 1-2)
+          low: '#fca5a5',       // Light-medium red (scores 3-4)
+          medium: '#f87171',    // Medium red (scores 5-6)
+          high: '#dc2626',      // Dark red (scores 7-8)
+          veryHigh: '#991b1b'   // Very dark red (high crime - scores 9-10)
         }
+
       case 'convenience':
-        // Green gradient: light green (good/convenient) to dark green (bad/inconvenient)
+        // GREEN GRADIENT FOR CONVENIENCE (Light = Low Convenience, Dark = High Convenience)
         return {
-          veryLow: '#006400',   // Dark green (very inconvenient - score 1-2)
-          low: '#228B22',       // Medium green (inconvenient - score 3-4)
-          medium: '#32CD32',    // Light green (average - score 5-6)
-          high: '#90EE90',      // Very light green (convenient - score 7-8)
-          veryHigh: '#E0FFE0'   // Pale green (very convenient - score 9-10)
+          veryLow: '#f0fdf4',   // Very light green (low convenience - scores 1-2)
+          low: '#dcfce7',       // Light green (scores 3-4)
+          medium: '#86efac',    // Medium green (scores 5-6)
+          high: '#22c55e',      // Dark green (scores 7-8)
+          veryHigh: '#15803d'   // Very dark green (high convenience - scores 9-10)
         }
-      default: // combined
-        // Purple gradient: light purple (good investment) to dark purple (bad investment)
+
+      default: // investment score
+        // PURPLE GRADIENT FOR INVESTMENT (Light = Poor Investment, Dark = Good Investment)
         return {
-          veryLow: '#4B0082',   // Dark purple (poor investment - score 1-2)
-          low: '#8A2BE2',       // Medium purple (below average - score 3-4)
-          medium: '#9370DB',    // Light purple (average - score 5-6)
-          high: '#DDA0DD',      // Very light purple (good - score 7-8)
-          veryHigh: '#F0E6FF'   // Pale purple (excellent - score 9-10)
+          veryLow: '#faf5ff',   // Very light purple (poor investment - scores 1-2)
+          low: '#e9d5ff',       // Light purple (scores 3-4)
+          medium: '#a855f7',    // Medium purple (scores 5-6)
+          high: '#7c3aed',      // Dark purple (scores 7-8)
+          veryHigh: '#581c87'   // Very dark purple (excellent investment - scores 9-10)
         }
     }
   }
 
   const getMetricLabel = (metric: string): string => {
     switch (metric) {
-      case 'safety': return 'Safety Rating'
+      case 'crime': return 'Crime Score'
       case 'convenience': return 'Convenience Score'
-      case 'combined': return 'Investment Index'
+      case 'investment': return 'Investment Index'
       default: return 'Investment Index'
     }
   }
@@ -408,23 +425,6 @@ export default function SuburbBoundaryHeatMap({
       />
 
 
-      {/* Controls */}
-      <div className="absolute bottom-4 left-4 bg-white p-2 rounded-lg shadow-lg border">
-        <div className="flex space-x-2">
-          <button
-            onClick={() => window.location.href = `/api/heatmap?action=export&metric=${metric}`}
-            className="px-3 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700"
-          >
-            Export Data
-          </button>
-          <button
-            onClick={loadData}
-            className="px-3 py-1 text-xs bg-gray-600 text-white rounded hover:bg-gray-700"
-          >
-            Refresh
-          </button>
-        </div>
-      </div>
     </div>
   )
 }

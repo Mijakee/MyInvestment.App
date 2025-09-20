@@ -42,7 +42,7 @@ export default function DemoPage() {
   const [featuredSuburbs, setFeaturedSuburbs] = useState<WASuburb[]>([])
   const [safetyRatings, setSafetyRatings] = useState<Record<string, SafetyRating>>({})
   const [isLoading, setIsLoading] = useState(true)
-  const [selectedDemo, setSelectedDemo] = useState<'search' | 'classification' | 'safety'>('search')
+  const [selectedDemo, setSelectedDemo] = useState<'search' | 'classification' | 'crime'>('search')
   const [searchQuery, setSearchQuery] = useState('')
   const [searchResults, setSearchResults] = useState<WASuburb[]>([])
   const [isSearching, setIsSearching] = useState(false)
@@ -228,9 +228,9 @@ export default function DemoPage() {
             </button>
 
             <button
-              onClick={() => setSelectedDemo('safety')}
+              onClick={() => setSelectedDemo('crime')}
               className={`p-4 rounded-xl border-2 transition-all duration-200 ${
-                selectedDemo === 'safety'
+                selectedDemo === 'crime'
                   ? 'border-primary bg-primary/10 text-primary'
                   : 'border-border hover:border-primary/50'
               }`}
@@ -340,7 +340,7 @@ export default function DemoPage() {
               </div>
             )}
 
-            {selectedDemo === 'safety' && (
+            {selectedDemo === 'crime' && (
               <div>
                 <h3 className="text-xl font-semibold mb-4">Safety Rating System</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">

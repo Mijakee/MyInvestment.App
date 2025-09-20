@@ -32,16 +32,16 @@ export default function Home() {
                 Explore 1,701 Suburbs →
               </Link>
               <Link
+                href="/heatmap"
+                className="bg-success hover:bg-success/90 text-success-foreground px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+              >
+                Interactive Heat Map
+              </Link>
+              <Link
                 href="/how-it-works"
                 className="border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300"
               >
                 How It Works
-              </Link>
-              <Link
-                href="/demo"
-                className="border border-muted text-muted-foreground hover:border-primary hover:text-primary px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300"
-              >
-                View Demo
               </Link>
             </div>
           </div>
@@ -151,16 +151,16 @@ export default function Home() {
                 Start Your Analysis
               </Link>
               <Link
+                href="/heatmap"
+                className="bg-success hover:bg-success/90 text-success-foreground px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 shadow-lg hover:shadow-xl"
+              >
+                Interactive Heat Map
+              </Link>
+              <Link
                 href="/how-it-works"
                 className="border-2 border-primary text-primary hover:bg-primary hover:text-primary-foreground px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300"
               >
                 How It Works
-              </Link>
-              <Link
-                href="/api/safety?action=stats"
-                className="border-2 border-muted text-muted-foreground hover:border-primary hover:text-primary px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300"
-              >
-                View API Stats
               </Link>
             </div>
           </div>

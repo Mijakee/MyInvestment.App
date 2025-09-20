@@ -21,7 +21,7 @@ export interface TransportStop {
 }
 
 export interface TransportAccessibilityRating {
-  overall_score: number // 1-10 scale
+  overall_score: number // 1-10 scale (CORRECTED: lower = better transport access)
   nearest_stop_distance: number // meters
   stop_density: number // stops per km²
   service_frequency: number // avg services per hour
@@ -48,6 +48,7 @@ function calculateDistance(lat1: number, lng1: number, lat2: number, lng2: numbe
 
 /**
  * Calculate transport accessibility score for a suburb
+ * CORRECTED: Lower scores = BETTER transport access, Higher scores = WORSE transport access
  */
 export function calculateTransportAccessibility(
   suburbLat: number,
@@ -64,7 +65,7 @@ export function calculateTransportAccessibility(
 
   if (stopsInRadius.length === 0) {
     return {
-      overall_score: 1,
+      overall_score: 10, // CORRECTED: High score = poor transport (no stops)
       nearest_stop_distance: Infinity,
       stop_density: 0,
       service_frequency: 0,
@@ -76,23 +77,23 @@ export function calculateTransportAccessibility(
     }
   }
 
-  // 1. Nearest Stop Distance Score (40% weight)
+  // 1. Nearest Stop Distance Score (40% weight) - INVERTED
   const distances = stopsInRadius.map(stop =>
     calculateDistance(suburbLat, suburbLng, stop.latitude, stop.longitude)
   )
   const nearestDistance = Math.min(...distances)
-  const distanceScore = Math.max(1, 10 - (nearestDistance / 200)) // 200m = excellent, 2000m = poor
+  const distanceScore = Math.min(10, Math.max(1, 1 + (nearestDistance / 200))) // CORRECTED: 200m = low score (excellent), 2000m = high score (poor)
 
-  // 2. Stop Density Score (25% weight)
+  // 2. Stop Density Score (25% weight) - INVERTED
   const areaKm2 = Math.PI * searchRadiusKm * searchRadiusKm
   const density = stopsInRadius.length / areaKm2
-  const densityScore = Math.min(10, Math.max(1, density * 2)) // 5 stops/km² = excellent
+  const densityScore = Math.max(1, Math.min(10, 10 - (density * 2))) // CORRECTED: 5 stops/km² = low score (excellent)
 
-  // 3. Service Frequency Score (15% weight)
+  // 3. Service Frequency Score (15% weight) - INVERTED
   const avgFrequency = stopsInRadius.reduce((sum, stop) => sum + (stop.frequency_score || 2), 0) / stopsInRadius.length
-  const frequencyScore = Math.min(10, Math.max(1, avgFrequency * 2)) // 5 services/hour = excellent
+  const frequencyScore = Math.max(1, Math.min(10, 10 - (avgFrequency * 2))) // CORRECTED: 5 services/hour = low score (excellent)
 
-  // 4. Accessibility Features Score (10% weight)
+  // 4. Accessibility Features Score (10% weight) - INVERTED
   const accessibilityScores = stopsInRadius.map(stop => {
     if (!stop.accessibility_features) return 5 // Default average
     const features = stop.accessibility_features
@@ -104,16 +105,16 @@ export function calculateTransportAccessibility(
     if (features.seating) score += 1
     return Math.min(10, score)
   })
-  const accessibilityScore = accessibilityScores.reduce((sum, score) => sum + score, 0) / accessibilityScores.length
+  const accessibilityScore = 10 - (accessibilityScores.reduce((sum, score) => sum + score, 0) / accessibilityScores.length) // CORRECTED: More features = lower score
 
-  // 5. Transport Types Variety Score (5% weight)
+  // 5. Transport Types Variety Score (5% weight) - INVERTED
   const uniqueTypes = new Set(stopsInRadius.map(stop => stop.type))
-  const varietyScore = Math.min(10, uniqueTypes.size * 2.5) // 4 types = excellent
+  const varietyScore = Math.max(1, Math.min(10, 10 - (uniqueTypes.size * 2.5))) // CORRECTED: 4 types = low score (excellent)
 
-  // 6. Coverage Score (5% weight) - How well connected to major destinations
+  // 6. Coverage Score (5% weight) - INVERTED
   const trainStops = stopsInRadius.filter(stop => stop.type === 'train').length
   const busRoutes = new Set(stopsInRadius.flatMap(stop => stop.routes || [])).size
-  const coverageScore = Math.min(10, (trainStops * 2) + (busRoutes / 5))
+  const coverageScore = Math.max(1, Math.min(10, 10 - ((trainStops * 2) + (busRoutes / 5)))) // CORRECTED: Better coverage = lower score
 
   // Weighted final score
   const overallScore = (
@@ -125,13 +126,13 @@ export function calculateTransportAccessibility(
     coverageScore * 0.05
   )
 
-  // Generate explanation
+  // Generate explanation - CORRECTED for inverted scale
   let explanation = ''
-  if (overallScore >= 8) {
+  if (overallScore <= 2) {
     explanation = 'Excellent public transport access with frequent services and nearby stops'
-  } else if (overallScore >= 6) {
+  } else if (overallScore <= 4) {
     explanation = 'Good public transport connectivity with reasonable walking distances'
-  } else if (overallScore >= 4) {
+  } else if (overallScore <= 6) {
     explanation = 'Limited public transport options requiring longer walks to stops'
   } else {
     explanation = 'Poor public transport accessibility with infrequent services'
@@ -157,20 +158,125 @@ export function calculateTransportAccessibility(
 }
 
 /**
- * Load transport stops from WA Data Portal (mock implementation)
- * In production, this would fetch from the actual WA transport datasets
+ * Load transport stops from WA Data Portal using real PTA data
  */
 export async function loadTransportStopsForArea(
   centerLat: number,
   centerLng: number,
   radiusKm: number = 5.0
 ): Promise<TransportStop[]> {
-  // TODO: Implement actual data loading from:
-  // - catalogue.data.wa.gov.au/dataset/public-transport-authority-stops-bus-stops
-  // - transperth.wa.gov.au GTFS data
+  try {
+    // Import persistence service
+    const { dataPersistenceService } = await import('./data-persistence-service')
 
-  // Mock realistic data for development
-  return generateMockTransportStops(centerLat, centerLng, radiusKm)
+    // Check cache first to prevent API calls and mock fallbacks
+    const cachedStops = await dataPersistenceService.getCachedTransportStops(centerLat, centerLng, radiusKm)
+    if (cachedStops && cachedStops.length > 0) {
+      console.log(`Using cached transport data (${cachedStops.length} stops)`)
+      return cachedStops
+    }
+
+    // Import the real WA PTA transport service
+    const { waptaTransportService } = await import('./wa-pta-transport-service')
+
+    console.log(`Loading real WA PTA transport data for ${centerLat}, ${centerLng} within ${radiusKm}km`)
+
+    // Get real transport data from WA PTA
+    const result = await waptaTransportService.calculateTransportAccessibility(
+      centerLat,
+      centerLng,
+      radiusKm
+    )
+
+    // Convert WA PTA stops to our TransportStop interface
+    const stops: TransportStop[] = result.stopsWithin5km.map(ptaStop => ({
+      id: ptaStop.stopid.toString(),
+      name: ptaStop.stopname,
+      type: determineStopType(ptaStop.stopname),
+      latitude: ptaStop.latitude,
+      longitude: ptaStop.longitude,
+      accessibility_features: {
+        wheelchair_accessible: ptaStop.accessible?.toUpperCase() === 'Y',
+        audio_announcements: ptaStop.accessible?.toUpperCase() === 'Y', // Assume accessible stops have audio
+        tactile_indicators: ptaStop.accessible?.toUpperCase() === 'Y', // Assume accessible stops have tactile
+        shelter: true, // Most WA stops have shelter
+        seating: true  // Most WA stops have seating
+      },
+      routes: [`Route ${ptaStop.stopnumber}`], // Use stop number as route reference
+      frequency_score: estimateFrequencyFromStopName(ptaStop.stopname)
+    }))
+
+    console.log(`Converted ${stops.length} WA PTA stops to TransportStop format`)
+
+    // Cache the successful result to prevent future fallbacks
+    if (stops.length > 0) {
+      await dataPersistenceService.cacheTransportStops(centerLat, centerLng, radiusKm, stops)
+      console.log(`Cached ${stops.length} transport stops for future use`)
+    }
+
+    return stops
+
+  } catch (error) {
+    console.error('Error loading real WA PTA data:', error)
+
+    // Try cache one more time before falling back to mock
+    try {
+      const { dataPersistenceService } = await import('./data-persistence-service')
+      const cachedStops = await dataPersistenceService.getCachedTransportStops(centerLat, centerLng, radiusKm)
+      if (cachedStops && cachedStops.length > 0) {
+        console.log(`Using cached transport data after API failure (${cachedStops.length} stops)`)
+        return cachedStops
+      }
+    } catch (cacheError) {
+      console.warn('Cache also failed:', cacheError)
+    }
+
+    console.warn('No cached data available, falling back to mock data as last resort')
+    // Fallback to mock data only as absolute last resort
+    return generateMockTransportStops(centerLat, centerLng, radiusKm)
+  }
+}
+
+/**
+ * Determine transport type from stop name
+ */
+function determineStopType(stopName: string): 'bus' | 'train' | 'ferry' | 'tram' {
+  const name = stopName.toLowerCase()
+
+  if (name.includes('station') || name.includes('rail')) {
+    return 'train'
+  } else if (name.includes('ferry') || name.includes('jetty') || name.includes('wharf')) {
+    return 'ferry'
+  } else if (name.includes('tram')) {
+    return 'tram'
+  }
+
+  return 'bus' // Default assumption
+}
+
+/**
+ * Estimate service frequency from stop characteristics
+ */
+function estimateFrequencyFromStopName(stopName: string): number {
+  const name = stopName.toLowerCase()
+
+  // Train stations typically have higher frequency
+  if (name.includes('station') || name.includes('rail')) {
+    return 6 + Math.random() * 4 // 6-10 services per hour
+  }
+
+  // Major bus interchanges
+  if (name.includes('interchange') || name.includes('terminal') || name.includes('central')) {
+    return 4 + Math.random() * 6 // 4-10 services per hour
+  }
+
+  // Ferry services are typically less frequent
+  if (name.includes('ferry') || name.includes('jetty')) {
+    return 1 + Math.random() * 3 // 1-4 services per hour
+  }
+
+  // Regular bus stops
+  return 2 + Math.random() * 4 // 2-6 services per hour
 }
 
 /**
@@ -236,31 +342,32 @@ function generateMockTransportStops(
 
 /**
  * Classify transport accessibility level
+ * CORRECTED: Lower scores = better accessibility (inverted scale)
  */
 export function getAccessibilityLevel(score: number): {
   level: string,
   color: string,
   description: string
 } {
-  if (score >= 8) {
+  if (score <= 2) {
     return {
       level: 'Excellent',
       color: 'green',
       description: 'Outstanding public transport access with frequent, diverse services'
     }
-  } else if (score >= 6) {
+  } else if (score <= 4) {
     return {
       level: 'Good',
       color: 'blue',
       description: 'Solid public transport connectivity with reasonable access'
     }
-  } else if (score >= 4) {
+  } else if (score <= 6) {
     return {
       level: 'Fair',
       color: 'yellow',
       description: 'Limited public transport requiring longer walks or planning'
     }
-  } else if (score >= 2) {
+  } else if (score <= 8) {
     return {
       level: 'Poor',
       color: 'orange',

@@ -36,6 +36,8 @@ export interface RealCensusData {
     highSchool: number
     bachelor: number
     postgraduate: number
+    trade: number
+    other: number
   }
   householdComposition: {
     couples: number
@@ -126,7 +128,9 @@ class RealCSVParser {
         educationLevel: {
           highSchool: 68,
           bachelor: 32,
-          postgraduate: 12
+          postgraduate: 12,
+          trade: 18,
+          other: 15
         },
         householdComposition: {
           couples: 55,
@@ -176,18 +180,20 @@ class RealCSVParser {
       educationLevel: {
         highSchool: isUrban ? 65 + random(13) * 20 : 55 + random(14) * 25,
         bachelor: isUrban ? 30 + random(15) * 25 : 20 + random(16) * 20,
-        postgraduate: isUrban ? 12 + random(17) * 15 : 6 + random(18) * 10
+        postgraduate: isUrban ? 12 + random(17) * 15 : 6 + random(18) * 10,
+        trade: isRemote ? 25 + random(19) * 20 : isUrban ? 15 + random(20) * 15 : 20 + random(21) * 18,
+        other: 10 + random(22) * 12
       },
       householdComposition: {
-        couples: 45 + random(19) * 25,
-        singleParent: 8 + random(20) * 10,
-        singlePerson: isUrban ? 30 + random(21) * 20 : 20 + random(22) * 15
+        couples: 45 + random(23) * 25,
+        singleParent: 8 + random(24) * 10,
+        singlePerson: isUrban ? 30 + random(25) * 20 : 20 + random(26) * 15
       },
       dwellingTypes: {
-        houses: isUrban ? 60 + random(23) * 30 : 80 + random(24) * 15,
-        apartments: isUrban ? 25 + random(25) * 30 : 5 + random(26) * 10,
-        townhouses: 5 + random(27) * 10,
-        other: 1 + random(28) * 4
+        houses: isUrban ? 60 + random(27) * 30 : 80 + random(28) * 15,
+        apartments: isUrban ? 25 + random(29) * 30 : 5 + random(30) * 10,
+        townhouses: 5 + random(31) * 10,
+        other: 1 + random(32) * 4
       }
     }
   }

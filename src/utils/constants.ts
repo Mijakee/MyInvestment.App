@@ -81,9 +81,10 @@ export const COLLECTIONS = {
 // API endpoints
 export const API_ENDPOINTS = {
   SUBURBS: '/api/suburbs',
-  SEARCH: '/api/search',
-  ANALYSIS: '/api/analysis',
-  USER_PREFERENCES: '/api/user/preferences',
+  SAFETY: '/api/safety',
+  CONVENIENCE: '/api/convenience',
+  HEATMAP: '/api/heatmap',
+  CENSUS: '/api/abs/census',
 } as const
 
 // Pagination defaults

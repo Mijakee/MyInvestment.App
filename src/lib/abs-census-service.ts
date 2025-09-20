@@ -39,6 +39,8 @@ interface SA2CensusData {
     highSchool: number
     bachelor: number
     postgraduate: number
+    trade: number
+    other: number
   }
   householdComposition: {
     couples: number
@@ -181,18 +183,20 @@ class ABSCensusService {
       educationLevel: {
         highSchool: isUrban ? 12 + random(13) * 15 : 18 + random(14) * 20,
         bachelor: isUrban ? 35 + random(15) * 20 : 20 + random(16) * 15,
-        postgraduate: isUrban ? 15 + random(17) * 20 : 8 + random(18) * 10
+        postgraduate: isUrban ? 15 + random(17) * 20 : 8 + random(18) * 10,
+        trade: isRemote ? 25 + random(19) * 20 : isUrban ? 15 + random(20) * 15 : 20 + random(21) * 18,
+        other: 10 + random(22) * 12
       },
       householdComposition: {
-        couples: isUrban ? 40 + random(19) * 20 : 50 + random(20) * 25,
-        singleParent: 8 + random(21) * 8,
-        singlePerson: isUrban ? 35 + random(22) * 15 : 25 + random(23) * 15
+        couples: isUrban ? 40 + random(23) * 20 : 50 + random(24) * 25,
+        singleParent: 8 + random(25) * 8,
+        singlePerson: isUrban ? 35 + random(26) * 15 : 25 + random(27) * 15
       },
       dwellingTypes: {
-        houses: isUrban ? 30 + random(24) * 40 : 70 + random(25) * 25,
-        apartments: isUrban ? 40 + random(26) * 35 : 5 + random(27) * 15,
-        townhouses: 5 + random(28) * 10,
-        other: 1 + random(29) * 3
+        houses: isUrban ? 30 + random(28) * 40 : 70 + random(29) * 25,
+        apartments: isUrban ? 40 + random(30) * 35 : 5 + random(31) * 15,
+        townhouses: 5 + random(32) * 10,
+        other: 1 + random(33) * 3
       }
     }
   }

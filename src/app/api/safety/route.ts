@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { safetyRatingService } from '../../../lib/safety-rating-service'
+import { safetyRatingService, crimeScoreService } from '../../../lib/safety-rating-service'
 import { waSuburbLoader } from '../../../lib/wa-suburb-loader'
 
 export async function GET(request: NextRequest) {
@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
           data: safetyRating,
           metadata: {
             processingTimeMs: duration,
-            algorithm: 'Multi-factor safety rating (Crime 50%, Demographics 25%, Neighborhood 15%, Trends 10%)'
+            algorithm: 'Crime Score: Direct Crime 70% + Neighborhood Crime 30% (Higher score = worse crime)'
           }
         })
       }
@@ -145,10 +145,10 @@ export async function GET(request: NextRequest) {
             },
             algorithm: {
               components: [
-                'Crime Data (50%): Crime rate, severity, violent crime ratio',
-                'Demographics (25%): Income, age, education, employment',
-                'Neighborhood (15%): Nearby suburb influence, economic base',
-                'Trends (10%): Crime trend direction over time'
+                'Crime Data (85%): Crime rate, severity, violent crime ratio',
+                'Demographics (0%): Moved to separate livability score',
+                'Neighborhood (15%): Nearby suburb crime influence',
+                'Trends (0%): Moved to separate trend analysis'
               ],
               scale: '1-10 (1 = highest concern, 10 = safest)',
               confidence: 'Based on data availability and quality'
@@ -157,10 +157,45 @@ export async function GET(request: NextRequest) {
         })
       }
 
+      case 'crime': {
+        const salCode = searchParams.get('sal_code')
+
+        if (!salCode) {
+          return NextResponse.json({
+            success: false,
+            error: 'SAL code required'
+          }, { status: 400 })
+        }
+
+        console.log(`Calculating crime score for suburb ${salCode}...`)
+        const startTime = Date.now()
+
+        const crimeScore = await crimeScoreService.calculateCrimeScore(salCode)
+
+        if (!crimeScore) {
+          return NextResponse.json({
+            success: false,
+            error: 'Unable to calculate crime score for this suburb'
+          }, { status: 404 })
+        }
+
+        const duration = Date.now() - startTime
+
+        return NextResponse.json({
+          success: true,
+          data: crimeScore,
+          metadata: {
+            processingTimeMs: duration,
+            algorithm: 'Crime Score: Direct Crime 70% + Neighborhood Crime 30% (Higher score = worse crime)',
+            note: 'This is the new crime-focused scoring system'
+          }
+        })
+      }
+
       default:
         return NextResponse.json({
           success: false,
-          error: 'Invalid action. Supported: suburb, batch, test, stats'
+          error: 'Invalid action. Supported: suburb, batch, test, stats, crime'
         }, { status: 400 })
     }
 

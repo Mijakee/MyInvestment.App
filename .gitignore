@@ -38,6 +38,20 @@ yarn-error.log*
 # local env files
 .env*.local
 .env
+.env.development
+.env.production
+
+# API keys and secrets
+**/secrets/
+**/keys/
+*.secret
+*.pem
+*.key
+*.p8
+*.p12
+config/secrets.json
+firebase-adminsdk-*.json
+service-account-*.json
 
 # vercel
 .vercel
@@ -99,10 +113,28 @@ src/data/**/*.csv
 src/data/**/*.xlsx
 src/data/**/*.xls
 
-# WA Police crime data files (official government data)
+# WA Police crime data files (official government data - sensitive/large)
 src/data/wa-police/
+src/data/crime/
 src/data/**/*.pdf
+
+# Cache and temp data files
+src/data/cache/
+src/data/temp/
+data-cache/
+*.cache
+cache/
 
 # Processed suburb CSV files (large datasets)
 src/data/wa_suburbs_*.csv
 src/data/processed/
+
+# Downloaded government datasets (too large for GitHub)
+src/data/downloads/
+src/data/**/*.dat
+src/data/**/*.bin
+
+# User uploaded files
+uploads/
+user-data/
+temp-uploads/

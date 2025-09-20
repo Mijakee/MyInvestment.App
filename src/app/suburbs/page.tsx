@@ -171,9 +171,14 @@ export default function SuburbsPage() {
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <header className="text-center mb-12">
-          <Link href="/" className="inline-flex items-center text-primary hover:text-primary/80 mb-4 transition-colors">
-            ← Back to Home
-          </Link>
+          <div className="flex justify-center gap-4 mb-4">
+            <Link href="/" className="inline-flex items-center text-primary hover:text-primary/80 transition-colors">
+              ← Back to Home
+            </Link>
+            <Link href="/heatmap" className="inline-flex items-center text-success hover:text-success/80 transition-colors">
+              🗺️ Interactive Heat Map
+            </Link>
+          </div>
           <h1 className="text-4xl font-bold text-foreground mb-4">
             Explore 1,701 WA Suburbs
           </h1>
@@ -281,7 +286,7 @@ export default function SuburbsPage() {
 
         {/* Suburbs Grid */}
         {!isLoading && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6 md:gap-8 mb-8">
             {currentSuburbs.map((suburb) => (
               <div key={suburb.sal_code} className="bg-white rounded-2xl shadow-lg border border-border overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2 hover:border-primary/30">
                 <div className="p-6">
@@ -328,17 +333,6 @@ export default function SuburbsPage() {
                       {suburb.latitude.toFixed(3)}°, {suburb.longitude.toFixed(3)}°
                     </div>
 
-                    {suburb.economic_base && suburb.economic_base.length > 0 && (
-                      <div className="flex items-center text-sm text-muted-foreground">
-                        <svg className="w-4 h-4 mr-3 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0V6a2 2 0 012 2v6a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2V6" />
-                        </svg>
-                        <span className="font-medium">
-                          {suburb.economic_base.slice(0, 2).join(', ')}
-                          {suburb.economic_base.length > 2 && ` +${suburb.economic_base.length - 2} more`}
-                        </span>
-                      </div>
-                    )}
 
                     <div className="flex items-center text-sm">
                       <svg className="w-4 h-4 mr-3 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">

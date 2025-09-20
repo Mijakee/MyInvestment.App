@@ -7,6 +7,13 @@ interface HeatMapPoint {
   lng: number
   intensity: number
   suburbName?: string
+  sal_code?: string
+  crimeScore?: number
+  convenienceScore?: number
+  investmentScore?: number
+  // Legacy fields for backward compatibility
+  safetyRating?: number
+  combinedScore?: number
 }
 
 interface HeatMapBounds {
@@ -21,20 +28,23 @@ interface HeatMapData {
   bounds: HeatMapBounds
   statistics: {
     totalSuburbs: number
-    averageSafety: number
+    averageCrime: number
     averageConvenience: number
-    averageCombined: number
+    averageInvestment: number
+    // Legacy fields
+    averageSafety?: number
+    averageCombined?: number
   }
 }
 
 interface HeatMapVisualizationProps {
-  metric?: 'safety' | 'convenience' | 'combined'
+  metric?: 'crime' | 'convenience' | 'investment'
   className?: string
   onSuburbClick?: (suburbName: string) => void
 }
 
 export default function HeatMapVisualization({
-  metric = 'combined',
+  metric = 'investment',
   className = '',
   onSuburbClick
 }: HeatMapVisualizationProps) {
@@ -207,7 +217,7 @@ export default function HeatMapVisualization({
 
   const getHeatMapGradient = (metric: string) => {
     switch (metric) {
-      case 'safety':
+      case 'crime':
         return {
           0.0: '#d73027', // Red (unsafe)
           0.3: '#fc8d59',
@@ -250,7 +260,7 @@ export default function HeatMapVisualization({
 
   const getMetricLabel = (metric: string): string => {
     switch (metric) {
-      case 'safety': return 'Safety Rating'
+      case 'crime': return 'Crime Score'
       case 'convenience': return 'Convenience Score'
       default: return 'Investment Score'
     }
@@ -258,7 +268,7 @@ export default function HeatMapVisualization({
 
   if (loading) {
     return (
-      <div className={`flex items-center justify-center h-96 bg-gray-100 rounded-lg ${className}`}>
+      <div className={`flex items-center justify-center h-[70vh] bg-gray-100 rounded-lg ${className}`}>
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading heat map data...</p>
@@ -270,7 +280,7 @@ export default function HeatMapVisualization({
 
   if (error) {
     return (
-      <div className={`flex items-center justify-center h-96 bg-red-50 rounded-lg border border-red-200 ${className}`}>
+      <div className={`flex items-center justify-center h-[70vh] bg-red-50 rounded-lg border border-red-200 ${className}`}>
         <div className="text-center">
           <div className="text-red-600 mb-2">
             <svg className="w-12 h-12 mx-auto" fill="currentColor" viewBox="0 0 20 20">
@@ -295,8 +305,8 @@ export default function HeatMapVisualization({
       {/* Map Container */}
       <div
         id="heatmap-container"
-        className="w-full h-96 rounded-lg border border-gray-300"
-        style={{ minHeight: '400px' }}
+        className="w-full h-[70vh] rounded-lg border border-gray-300"
+        style={{ minHeight: '500px' }}
       />
 
       {/* Legend */}
@@ -329,23 +339,6 @@ export default function HeatMapVisualization({
         </div>
       )}
 
-      {/* Controls */}
-      <div className="absolute bottom-4 left-4 bg-white p-2 rounded-lg shadow-lg border">
-        <div className="flex space-x-2">
-          <button
-            onClick={() => window.location.href = `/api/heatmap?action=export&metric=${metric}`}
-            className="px-3 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700"
-          >
-            Export Data
-          </button>
-          <button
-            onClick={loadHeatMapData}
-            className="px-3 py-1 text-xs bg-gray-600 text-white rounded hover:bg-gray-700"
-          >
-            Refresh
-          </button>
-        </div>
-      </div>
     </div>
   )
 }

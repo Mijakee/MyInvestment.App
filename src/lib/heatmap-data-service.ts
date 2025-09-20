@@ -4,20 +4,25 @@
  */
 
 import { waSuburbLoader } from './wa-suburb-loader'
-import { safetyRatingService } from './safety-rating-service'
+import { crimeScoreService } from './safety-rating-service'
 import { convenienceScoreService } from './convenience-score-service'
 
 export interface HeatMapPoint {
   lat: number
   lng: number
-  safetyRating: number
-  convenienceScore: number
-  combinedScore: number
-  safetyIntensity: number    // 0-1 scale for safety heat visualization
-  convenienceIntensity: number // 0-1 scale for convenience heat visualization
-  combinedIntensity: number  // 0-1 scale for combined investment heat
+  crimeScore: number        // 1-10 scale (higher = worse crime)
+  convenienceScore: number  // 1-10 scale (higher = better convenience)
+  investmentScore: number   // 1-10 scale (higher = better investment)
+  crimeIntensity: number    // 0-1 scale for crime heat visualization (higher = darker red)
+  convenienceIntensity: number // 0-1 scale for convenience heat visualization (higher = darker green)
+  investmentIntensity: number  // 0-1 scale for investment heat visualization (higher = darker purple)
   suburbName: string
   salCode: string
+  // Legacy fields for backward compatibility
+  safetyRating?: number
+  safetyIntensity?: number
+  combinedScore?: number
+  combinedIntensity?: number
 }
 
 export interface HeatMapBounds {
@@ -32,12 +37,17 @@ export interface HeatMapDataset {
   bounds: HeatMapBounds
   statistics: {
     totalSuburbs: number
-    averageSafety: number
+    averageCrime: number
     averageConvenience: number
-    averageCombined: number
-    safetyRange: { min: number; max: number }
+    averageInvestment: number
+    crimeRange: { min: number; max: number }
     convenienceRange: { min: number; max: number }
-    combinedRange: { min: number; max: number }
+    investmentRange: { min: number; max: number }
+    // Legacy fields
+    averageSafety?: number
+    averageCombined?: number
+    safetyRange?: { min: number; max: number }
+    combinedRange?: { min: number; max: number }
   }
   lastUpdated: Date
 }
@@ -112,15 +122,15 @@ class HeatMapDataService {
         return null
       }
 
-      // Calculate ratings (with fallback to avoid blocking entire dataset)
-      let safetyRating = 5.0
+      // Calculate scores (with fallback to avoid blocking entire dataset)
+      let crimeScore = 5.0
       let convenienceScore = 5.0
 
       try {
-        const safety = await safetyRatingService.calculateSafetyRating(salCode)
-        if (safety) safetyRating = safety.overallRating
+        const crime = await crimeScoreService.calculateCrimeScore(salCode)
+        if (crime) crimeScore = crime.overallScore
       } catch (error) {
-        console.warn(`Failed to calculate safety rating for ${salCode}:`, error)
+        console.warn(`Failed to calculate crime score for ${salCode}:`, error)
       }
 
       try {
@@ -130,25 +140,33 @@ class HeatMapDataService {
         console.warn(`Failed to calculate convenience score for ${salCode}:`, error)
       }
 
-      // Calculate combined investment score
-      const combinedScore = (safetyRating * 0.60) + (convenienceScore * 0.40)
+      // Calculate investment score (lower crime = better, higher convenience = better)
+      const invertedCrimeScore = 11 - crimeScore // Invert crime score for investment calc
+      const investmentScore = (invertedCrimeScore * 0.60) + (convenienceScore * 0.40)
 
       // Convert to heat map intensities (0-1 scale)
-      const safetyIntensity = this.normalizeToIntensity(safetyRating, 1, 10)
+      // CRIME: HIGHER score = MORE crime = HIGHER intensity (darker red)
+      const crimeIntensity = this.normalizeToIntensity(crimeScore, 1, 10)
+      // Convenience & Investment: HIGHER score = BETTER = HIGHER intensity (darker colors)
       const convenienceIntensity = this.normalizeToIntensity(convenienceScore, 1, 10)
-      const combinedIntensity = this.normalizeToIntensity(combinedScore, 1, 10)
+      const investmentIntensity = this.normalizeToIntensity(investmentScore, 1, 10)
 
       return {
         lat: suburb.latitude,
         lng: suburb.longitude,
-        safetyRating,
+        crimeScore,
         convenienceScore,
-        combinedScore,
-        safetyIntensity,
+        investmentScore,
+        crimeIntensity,
         convenienceIntensity,
-        combinedIntensity,
+        investmentIntensity,
         suburbName: suburb.sal_name,
-        salCode: suburb.sal_code
+        salCode: suburb.sal_code,
+        // Legacy fields for backward compatibility
+        safetyRating: 11 - crimeScore, // Convert to legacy safety rating
+        safetyIntensity: this.normalizeToIntensity(11 - crimeScore, 1, 10),
+        combinedScore: investmentScore,
+        combinedIntensity: investmentIntensity
       }
     } catch (error) {
       console.error(`Error generating heat point for ${salCode}:`, error)
@@ -173,7 +191,7 @@ class HeatMapDataService {
    */
   getHeatMapForMetric(
     points: HeatMapPoint[],
-    metric: 'safety' | 'convenience' | 'combined',
+    metric: 'crime' | 'convenience' | 'investment',
     bounds?: HeatMapBounds
   ): Array<{ lat: number; lng: number; intensity: number; suburbName: string }> {
     let filteredPoints = bounds ? this.filterByBounds(points, bounds) : points
@@ -181,9 +199,10 @@ class HeatMapDataService {
     return filteredPoints.map(point => ({
       lat: point.lat,
       lng: point.lng,
-      intensity: metric === 'safety' ? point.safetyIntensity :
+      intensity: metric === 'crime' ? point.crimeIntensity :
                 metric === 'convenience' ? point.convenienceIntensity :
-                point.combinedIntensity,
+                metric === 'investment' ? point.investmentIntensity :
+                point.investmentIntensity, // default to investment
       suburbName: point.suburbName
     }))
   }
@@ -195,27 +214,37 @@ class HeatMapDataService {
     if (points.length === 0) {
       return {
         totalSuburbs: 0,
-        averageSafety: 0,
+        averageCrime: 0,
         averageConvenience: 0,
+        averageInvestment: 0,
+        crimeRange: { min: 0, max: 10 },
+        convenienceRange: { min: 0, max: 10 },
+        investmentRange: { min: 0, max: 10 },
+        // Legacy fields
+        averageSafety: 0,
         averageCombined: 0,
         safetyRange: { min: 0, max: 10 },
-        convenienceRange: { min: 0, max: 10 },
         combinedRange: { min: 0, max: 10 }
       }
     }
 
-    const safetyRatings = points.map(p => p.safetyRating)
+    const crimeScores = points.map(p => p.crimeScore)
     const convenienceScores = points.map(p => p.convenienceScore)
-    const combinedScores = points.map(p => p.combinedScore)
+    const investmentScores = points.map(p => p.investmentScore)
 
     return {
       totalSuburbs: points.length,
-      averageSafety: this.average(safetyRatings),
+      averageCrime: this.average(crimeScores),
       averageConvenience: this.average(convenienceScores),
-      averageCombined: this.average(combinedScores),
-      safetyRange: { min: Math.min(...safetyRatings), max: Math.max(...safetyRatings) },
+      averageInvestment: this.average(investmentScores),
+      crimeRange: { min: Math.min(...crimeScores), max: Math.max(...crimeScores) },
       convenienceRange: { min: Math.min(...convenienceScores), max: Math.max(...convenienceScores) },
-      combinedRange: { min: Math.min(...combinedScores), max: Math.max(...combinedScores) }
+      investmentRange: { min: Math.min(...investmentScores), max: Math.max(...investmentScores) },
+      // Legacy fields
+      averageSafety: this.average(points.map(p => p.safetyRating || 5)),
+      averageCombined: this.average(investmentScores),
+      safetyRange: { min: Math.min(...points.map(p => p.safetyRating || 5)), max: Math.max(...points.map(p => p.safetyRating || 5)) },
+      combinedRange: { min: Math.min(...investmentScores), max: Math.max(...investmentScores) }
     }
   }
 
@@ -253,6 +282,36 @@ class HeatMapDataService {
   }
 
   /**
+   * Get optimized heat map data for web visualization (smaller payload)
+   */
+  async getOptimizedHeatMapData(metric: 'crime' | 'convenience' | 'investment' = 'investment'): Promise<{
+    points: Array<{ lat: number; lng: number; intensity: number; suburbName: string; safetyRating: number; convenienceScore: number; combinedScore: number }>,
+    bounds: HeatMapBounds,
+    statistics: any
+  }> {
+    const fullData = await this.generateHeatMapData()
+
+    const optimizedPoints = fullData.points.map(point => ({
+      lat: point.lat,
+      lng: point.lng,
+      intensity: metric === 'crime' ? point.crimeIntensity :
+                metric === 'convenience' ? point.convenienceIntensity :
+                metric === 'investment' ? point.investmentIntensity :
+                point.investmentIntensity, // default to investment
+      suburbName: point.suburbName,
+      safetyRating: point.safetyRating,
+      convenienceScore: point.convenienceScore,
+      combinedScore: point.combinedScore
+    }))
+
+    return {
+      points: optimizedPoints,
+      bounds: fullData.bounds,
+      statistics: fullData.statistics
+    }
+  }
+
+  /**
    * Export heat map data to JSON for static hosting
    */
   async exportHeatMapData(): Promise<string> {
@@ -264,7 +323,7 @@ class HeatMapDataService {
    * Get optimized heat map data for web client
    * Reduces data size by removing unnecessary fields for visualization
    */
-  async getOptimizedHeatMapData(metric: 'safety' | 'convenience' | 'combined' = 'combined'): Promise<{
+  async getOptimizedHeatMapData(metric: 'crime' | 'convenience' | 'investment' = 'investment'): Promise<{
     points: Array<{ lat: number; lng: number; intensity: number; suburbName: string; safetyRating: number; convenienceScore: number; combinedScore: number }>,
     bounds: HeatMapBounds,
     statistics: any
@@ -274,9 +333,10 @@ class HeatMapDataService {
     const optimizedPoints = fullData.points.map(point => ({
       lat: point.lat,
       lng: point.lng,
-      intensity: metric === 'safety' ? point.safetyIntensity :
+      intensity: metric === 'crime' ? point.crimeIntensity :
                 metric === 'convenience' ? point.convenienceIntensity :
-                point.combinedIntensity,
+                metric === 'investment' ? point.investmentIntensity :
+                point.investmentIntensity, // default to investment
       suburbName: point.suburbName,
       safetyRating: point.safetyRating,
       convenienceScore: point.convenienceScore,

@@ -7,6 +7,13 @@ interface HeatMapPoint {
   lng: number
   intensity: number
   suburbName?: string
+  sal_code?: string
+  crimeScore?: number
+  convenienceScore?: number
+  investmentScore?: number
+  // Legacy fields for backward compatibility
+  safetyRating?: number
+  combinedScore?: number
 }
 
 interface HeatMapBounds {
@@ -21,20 +28,23 @@ interface HeatMapData {
   bounds: HeatMapBounds
   statistics: {
     totalSuburbs: number
-    averageSafety: number
+    averageCrime: number
     averageConvenience: number
-    averageCombined: number
+    averageInvestment: number
+    // Legacy fields
+    averageSafety?: number
+    averageCombined?: number
   }
 }
 
 interface SimpleHeatMapVisualizationProps {
-  metric?: 'safety' | 'convenience' | 'combined'
+  metric?: 'crime' | 'convenience' | 'investment'
   className?: string
   onSuburbClick?: (suburbName: string) => void
 }
 
 export default function SimpleHeatMapVisualization({
-  metric = 'combined',
+  metric = 'investment',
   className = '',
   onSuburbClick
 }: SimpleHeatMapVisualizationProps) {
@@ -42,8 +52,9 @@ export default function SimpleHeatMapVisualization({
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [mapReady, setMapReady] = useState(false)
+  const [mapInstance, setMapInstance] = useState<any>(null)
 
-  // Load heat map data
+  // Load heat map data from API
   const loadHeatMapData = useCallback(async () => {
     try {
       setLoading(true)
@@ -65,25 +76,30 @@ export default function SimpleHeatMapVisualization({
     }
   }, [metric])
 
-  // Load data on component mount and metric change
-  useEffect(() => {
-    loadHeatMapData()
-  }, [loadHeatMapData])
-
-  // Initialize map when data is ready
-  useEffect(() => {
-    if (heatMapData && !mapReady) {
-      initializeMap()
+  // Clean up map container completely
+  const cleanupMapContainer = useCallback(() => {
+    const mapContainer = document.getElementById('simple-heatmap-container')
+    if (mapContainer) {
+      mapContainer.innerHTML = ''
+      mapContainer.removeAttribute('data-leaflet-id')
+      mapContainer.className = mapContainer.className.replace(/leaflet-\S+/g, '').trim()
+      if (!mapContainer.className) {
+        mapContainer.className = 'w-full h-[70vh] rounded-lg border border-gray-300'
+      }
+      if ((mapContainer as any)._leaflet_id) {
+        delete (mapContainer as any)._leaflet_id
+      }
     }
-  }, [heatMapData, mapReady])
+  }, [])
 
-  const initializeMap = async () => {
+  // Initialize Leaflet map
+  const initializeMap = useCallback(async () => {
+    if (!heatMapData) return
+
     try {
-      // Dynamic import of Leaflet to avoid SSR issues
       const L = (await import('leaflet')).default
-      await import('leaflet/dist/leaflet.css')
 
-      // Fix default icons issue with Leaflet and webpack
+      // Fix Leaflet icons for webpack
       delete (L.Icon.Default.prototype as any)._getIconUrl
       L.Icon.Default.mergeOptions({
         iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-icon-2x.png',
@@ -91,37 +107,52 @@ export default function SimpleHeatMapVisualization({
         shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/images/marker-shadow.png',
       })
 
-      // Initialize map centered on WA
       const mapContainer = document.getElementById('simple-heatmap-container')
-      if (!mapContainer || !heatMapData) return
+      if (!mapContainer) return
 
-      // Clear any existing map
-      mapContainer.innerHTML = ''
+      // Clean up any existing map
+      if (mapInstance) {
+        try {
+          mapInstance.remove()
+          setMapInstance(null)
+        } catch (err) {
+          console.warn('Error removing existing map:', err)
+        }
+      }
 
-      const map = L.map(mapContainer).setView([-31.9505, 115.8605], 8) // Perth center
+      cleanupMapContainer()
 
-      // Add OpenStreetMap tiles
+      // Create new map
+      const map = L.map(mapContainer).setView([-31.9505, 115.8605], 8)
+      setMapInstance(map)
+
+      // Add tile layer
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors'
       }).addTo(map)
 
-      // Create circle markers for each suburb with heat map-like coloring
+      // Add suburb markers
       heatMapData.points.forEach(point => {
         const circleMarker = L.circleMarker([point.lat, point.lng], {
-          radius: Math.max(4, point.intensity * 20), // Scale size by intensity
+          radius: Math.max(4, point.intensity * 20),
           fillColor: getIntensityColor(point.intensity, metric),
           color: '#fff',
           weight: 1,
           opacity: 0.9,
-          fillOpacity: Math.max(0.3, point.intensity * 0.8) // Vary opacity by intensity
+          fillOpacity: Math.max(0.3, point.intensity * 0.8)
         })
 
-        // Add popup with suburb information
+        // Add popup
         if (point.suburbName) {
+          const actualRating = metric === 'crime' ? (point as any).crimeScore :
+                              metric === 'convenience' ? (point as any).convenienceScore :
+                              (point as any).investmentScore
+          const displayValue = actualRating ? actualRating.toFixed(1) : (point.intensity * 10).toFixed(1)
+
           circleMarker.bindPopup(`
             <div class="text-center">
               <strong class="text-lg">${point.suburbName}</strong><br/>
-              <span class="text-sm text-gray-600">${getMetricLabel(metric)}: ${(point.intensity * 10).toFixed(1)}/10</span><br/>
+              <span class="text-sm text-gray-600">${getMetricLabel(metric)}: ${displayValue}/10</span><br/>
               <button
                 onclick="window.parent.postMessage({type: 'suburbClick', suburb: '${point.suburbName}'}, '*')"
                 class="mt-2 px-3 py-1 bg-blue-600 text-white rounded text-xs hover:bg-blue-700"
@@ -141,7 +172,7 @@ export default function SimpleHeatMapVisualization({
         circleMarker.addTo(map)
       })
 
-      // Fit map to WA bounds
+      // Fit map to bounds
       if (heatMapData.bounds) {
         map.fitBounds([
           [heatMapData.bounds.south, heatMapData.bounds.west],
@@ -154,60 +185,109 @@ export default function SimpleHeatMapVisualization({
       console.error('Map initialization error:', err)
       setError('Failed to initialize map visualization')
     }
-  }
+  }, [heatMapData, mapInstance, metric, onSuburbClick, cleanupMapContainer])
 
+  // Color mapping logic using intensity values (now correctly calculated in service)
   const getIntensityColor = (intensity: number, metric: string): string => {
-    // Create smooth color gradients based on intensity
     const colors = getColorGradient(metric)
 
-    // Find the appropriate color based on intensity
-    if (intensity <= 0.2) return colors.veryLow
-    if (intensity <= 0.4) return colors.low
-    if (intensity <= 0.6) return colors.medium
-    if (intensity <= 0.8) return colors.high
-    return colors.veryHigh
+    // Intensity is now properly calculated:
+    // - Safety: Lower scores = lower intensity (0 = safest, 1 = most dangerous)
+    // - Convenience/Investment: Higher scores = higher intensity (0 = worst, 1 = best)
+
+    if (intensity <= 0.2) return colors.veryLow     // 0-0.2
+    if (intensity <= 0.4) return colors.low         // 0.2-0.4
+    if (intensity <= 0.6) return colors.medium      // 0.4-0.6
+    if (intensity <= 0.8) return colors.high        // 0.6-0.8
+    return colors.veryHigh                          // 0.8-1.0
   }
 
+  // ============================================
+  // COLOR CONFIGURATION - MODIFY COLORS HERE
+  // ============================================
   const getColorGradient = (metric: string) => {
     switch (metric) {
-      case 'safety':
+      case 'crime':
+        // RED GRADIENT FOR CRIME (Light = Low Crime, Dark = High Crime)
         return {
-          veryLow: '#d73027',   // Red (unsafe)
-          low: '#fc8d59',       // Orange
-          medium: '#fee08b',    // Yellow
-          high: '#d9ef8b',      // Light green
-          veryHigh: '#4575b4'   // Blue (safe)
+          veryLow: '#fed7d7',   // More visible light red (safest - scores 1-2)
+          low: '#fca5a5',       // More visible light red (good - scores 3-4)
+          medium: '#f87171',    // Medium red (average - scores 5-6)
+          high: '#dc2626',      // Dark red (poor - scores 7-8)
+          veryHigh: '#991b1b'   // Very dark red (most dangerous - scores 9-10)
         }
+
       case 'convenience':
+        // GREEN GRADIENT FOR CONVENIENCE (Light = Low, Dark = High)
         return {
-          veryLow: '#762a83',   // Purple (inconvenient)
-          low: '#c2a5cf',       // Light purple
-          medium: '#f7f7f7',    // Light gray
-          high: '#a6dba0',      // Light green
-          veryHigh: '#1b7837'   // Green (convenient)
+          veryLow: '#f0fdf4',   // Very light green (low convenience - scores 1-2)
+          low: '#dcfce7',       // Light green (scores 3-4)
+          medium: '#86efac',    // Medium green (scores 5-6)
+          high: '#22c55e',      // Dark green (scores 7-8)
+          veryHigh: '#15803d'   // Very dark green (high convenience - scores 9-10)
         }
-      default: // combined
+
+      default: // combined investment score
+        // PURPLE GRADIENT FOR INVESTMENT (Light = Low, Dark = High)
         return {
-          veryLow: '#d73027',   // Red (poor investment)
-          low: '#f46d43',       // Orange-red
-          medium: '#fdae61',    // Orange
-          high: '#fee08b',      // Yellow
-          veryHigh: '#4575b4'   // Blue (excellent investment)
+          veryLow: '#faf5ff',   // Very light purple (low investment - scores 1-2)
+          low: '#e9d5ff',       // Light purple (scores 3-4)
+          medium: '#a855f7',    // Medium purple (scores 5-6)
+          high: '#7c3aed',      // Dark purple (scores 7-8)
+          veryHigh: '#581c87'   // Very dark purple (high investment - scores 9-10)
         }
     }
   }
 
   const getMetricLabel = (metric: string): string => {
     switch (metric) {
-      case 'safety': return 'Safety Rating'
+      case 'crime': return 'Crime Score'
       case 'convenience': return 'Convenience Score'
+      case 'investment': return 'Investment Score'
       default: return 'Investment Score'
     }
   }
 
+  // Effect hooks
+  useEffect(() => {
+    loadHeatMapData()
+  }, [loadHeatMapData])
+
+  useEffect(() => {
+    if (heatMapData && !mapReady) {
+      initializeMap()
+    }
+  }, [heatMapData, mapReady, initializeMap])
+
+  useEffect(() => {
+    if (mapInstance && mapReady) {
+      try {
+        mapInstance.remove()
+        setMapInstance(null)
+        setMapReady(false)
+        cleanupMapContainer()
+      } catch (err) {
+        console.warn('Error removing previous map:', err)
+      }
+    }
+  }, [metric, mapInstance, mapReady, cleanupMapContainer])
+
+  useEffect(() => {
+    return () => {
+      if (mapInstance) {
+        try {
+          mapInstance.remove()
+        } catch (err) {
+          console.warn('Error removing map instance:', err)
+        }
+      }
+    }
+  }, [mapInstance])
+
+  // Render states
   if (loading) {
     return (
-      <div className={`flex items-center justify-center h-96 bg-gray-100 rounded-lg ${className}`}>
+      <div className={`flex items-center justify-center h-[70vh] bg-gray-100 rounded-lg ${className}`}>
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading heat map data...</p>
@@ -219,7 +299,7 @@ export default function SimpleHeatMapVisualization({
 
   if (error) {
     return (
-      <div className={`flex items-center justify-center h-96 bg-red-50 rounded-lg border border-red-200 ${className}`}>
+      <div className={`flex items-center justify-center h-[70vh] bg-red-50 rounded-lg border border-red-200 ${className}`}>
         <div className="text-center">
           <div className="text-red-600 mb-2">
             <svg className="w-12 h-12 mx-auto" fill="currentColor" viewBox="0 0 20 20">
@@ -244,8 +324,8 @@ export default function SimpleHeatMapVisualization({
       {/* Map Container */}
       <div
         id="simple-heatmap-container"
-        className="w-full h-96 rounded-lg border border-gray-300"
-        style={{ minHeight: '400px' }}
+        className="w-full h-[70vh] rounded-lg border border-gray-300"
+        style={{ minHeight: '500px' }}
       />
 
       {/* Legend */}
@@ -255,33 +335,33 @@ export default function SimpleHeatMapVisualization({
           <div className="space-y-1 text-xs">
             <div className="flex items-center">
               <div className="w-3 h-3 rounded mr-2" style={{
-                backgroundColor: getColorGradient(metric).veryLow
+                backgroundColor: getColorGradient(metric).veryHigh
               }}></div>
-              <span>Very Low</span>
-            </div>
-            <div className="flex items-center">
-              <div className="w-3 h-3 rounded mr-2" style={{
-                backgroundColor: getColorGradient(metric).low
-              }}></div>
-              <span>Low</span>
-            </div>
-            <div className="flex items-center">
-              <div className="w-3 h-3 rounded mr-2" style={{
-                backgroundColor: getColorGradient(metric).medium
-              }}></div>
-              <span>Medium</span>
+              <span>Best (9-10)</span>
             </div>
             <div className="flex items-center">
               <div className="w-3 h-3 rounded mr-2" style={{
                 backgroundColor: getColorGradient(metric).high
               }}></div>
-              <span>High</span>
+              <span>Good (7-8)</span>
             </div>
             <div className="flex items-center">
               <div className="w-3 h-3 rounded mr-2" style={{
-                backgroundColor: getColorGradient(metric).veryHigh
+                backgroundColor: getColorGradient(metric).medium
               }}></div>
-              <span>Very High</span>
+              <span>Average (5-6)</span>
+            </div>
+            <div className="flex items-center">
+              <div className="w-3 h-3 rounded mr-2" style={{
+                backgroundColor: getColorGradient(metric).low
+              }}></div>
+              <span>Poor (3-4)</span>
+            </div>
+            <div className="flex items-center">
+              <div className="w-3 h-3 rounded mr-2" style={{
+                backgroundColor: getColorGradient(metric).veryLow
+              }}></div>
+              <span>Worst (1-2)</span>
             </div>
           </div>
           <div className="mt-2 pt-2 border-t text-xs text-gray-600">
@@ -290,23 +370,6 @@ export default function SimpleHeatMapVisualization({
         </div>
       )}
 
-      {/* Controls */}
-      <div className="absolute bottom-4 left-4 bg-white p-2 rounded-lg shadow-lg border">
-        <div className="flex space-x-2">
-          <button
-            onClick={() => window.location.href = `/api/heatmap?action=export&metric=${metric}`}
-            className="px-3 py-1 text-xs bg-blue-600 text-white rounded hover:bg-blue-700"
-          >
-            Export Data
-          </button>
-          <button
-            onClick={loadHeatMapData}
-            className="px-3 py-1 text-xs bg-gray-600 text-white rounded hover:bg-gray-700"
-          >
-            Refresh
-          </button>
-        </div>
-      </div>
     </div>
   )
 }

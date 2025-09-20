@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
         })
       }
 
-      case 'combined': {
+      case 'investment': {
         if (!salCode) {
           return NextResponse.json({
             success: false,
@@ -168,7 +168,7 @@ export async function GET(request: NextRequest) {
       default:
         return NextResponse.json({
           success: false,
-          error: 'Invalid action. Use: calculate, combined, test, batch'
+          error: 'Invalid action. Use: calculate, investment, test, batch'
         }, { status: 400 })
     }
 
