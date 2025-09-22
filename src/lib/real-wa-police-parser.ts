@@ -1,7 +1,12 @@
 /**
  * Real WA Police Crime Data Parser
- * Uses authentic WA Police district crime statistics
+ * Parses the official WA Police Crime Time Series Excel file (15MB)
+ * Downloaded from: https://www.wa.gov.au/organisation/western-australia-police-force/crime-statistics
  */
+
+import * as XLSX from 'xlsx'
+import * as fs from 'fs'
+import * as path from 'path'
 
 export interface RealCrimeData {
   district: string
@@ -26,25 +31,274 @@ export interface RealCrimeData {
 
 class RealWAPoliceParser {
   private cache = new Map<string, RealCrimeData>()
+  private excelDataCache = new Map<string, any>()
+  private initialized = false
+
+  /**
+   * Initialize parser by loading Excel file
+   */
+  async initialize(): Promise<void> {
+    if (this.initialized) return
+
+    try {
+      await this.loadExcelData()
+      this.initialized = true
+      console.log('WA Police Excel data loaded successfully')
+    } catch (error) {
+      console.warn('Could not load Excel data, using fallback statistical data:', error)
+      this.initialized = true // Still mark as initialized to use fallback data
+    }
+  }
+
+  /**
+   * Load and parse the WA Police Excel file
+   */
+  private async loadExcelData(): Promise<void> {
+    const excelPaths = [
+      path.join(process.cwd(), 'src/data/crime/wa_police_crime_timeseries.xlsx'),
+      path.join(process.cwd(), 'src/data/wa_police_crime_timeseries.xlsx')
+    ]
+
+    let workbook: XLSX.WorkBook | null = null
+
+    for (const excelPath of excelPaths) {
+      try {
+        if (fs.existsSync(excelPath)) {
+          console.log(`Loading WA Police Excel data from: ${excelPath}`)
+          const fileBuffer = fs.readFileSync(excelPath)
+          workbook = XLSX.read(fileBuffer, { type: 'buffer' })
+          break
+        }
+      } catch (error) {
+        console.warn(`Could not load from ${excelPath}:`, error)
+      }
+    }
+
+    if (!workbook) {
+      throw new Error('Could not find WA Police crime Excel file')
+    }
+
+    // Process worksheets
+    const sheetNames = workbook.SheetNames
+    console.log(`Found ${sheetNames.length} worksheets:`, sheetNames.slice(0, 3))
+
+    for (const sheetName of sheetNames.slice(0, 10)) { // Process first 10 sheets only
+      try {
+        const worksheet = workbook.Sheets[sheetName]
+        const data = XLSX.utils.sheet_to_json(worksheet, { header: 1 }) as any[][]
+
+        if (data.length > 1) {
+          this.processWorksheetData(sheetName, data)
+        }
+      } catch (error) {
+        console.warn(`Error processing worksheet ${sheetName}:`, error)
+      }
+    }
+  }
+
+  /**
+   * Process individual worksheet data
+   */
+  private processWorksheetData(sheetName: string, data: any[][]): void {
+    const headers = data[0] as string[]
+    const rows = data.slice(1)
+
+    console.log(`Processing ${sheetName}: ${rows.length} rows`)
+
+    // Look for key columns
+    const districtColIndex = this.findColumnIndex(headers, ['district', 'police district', 'region'])
+    const offenceColIndex = this.findColumnIndex(headers, ['offence', 'crime', 'offence type'])
+    const countColIndex = this.findColumnIndex(headers, ['count', 'number', 'total'])
+
+    if (districtColIndex !== -1 && offenceColIndex !== -1 && countColIndex !== -1) {
+      // Process first 100 rows for performance
+      for (let i = 0; i < Math.min(rows.length, 100); i++) {
+        const row = rows[i]
+        try {
+          const district = this.cleanDistrictName(row[districtColIndex])
+          const offence = row[offenceColIndex]?.toString().trim()
+          const count = this.parseNumber(row[countColIndex])
+
+          if (district && offence && count > 0) {
+            const key = `${district}-${offence}`
+            this.excelDataCache.set(key, {
+              district,
+              offence,
+              count,
+              sheet: sheetName
+            })
+          }
+        } catch (error) {
+          // Skip invalid rows
+        }
+      }
+    }
+  }
+
+  /**
+   * Find column index by name variations
+   */
+  private findColumnIndex(headers: string[], searchTerms: string[]): number {
+    for (let i = 0; i < headers.length; i++) {
+      const header = (headers[i] || '').toString().toLowerCase().trim()
+      if (searchTerms.some(term => header.includes(term.toLowerCase()))) {
+        return i
+      }
+    }
+    return -1
+  }
+
+  /**
+   * Clean and standardize district names
+   */
+  private cleanDistrictName(value: any): string {
+    if (!value) return ''
+
+    const district = value.toString().trim()
+    const mappings: Record<string, string> = {
+      'perth': 'Perth District',
+      'fremantle': 'Fremantle District',
+      'armadale': 'Armadale District',
+      'cannington': 'Cannington District',
+      'joondalup': 'Joondalup District',
+      'mandurah': 'Mandurah District',
+      'midland': 'Midland District',
+      'mirrabooka': 'Mirrabooka District'
+    }
+
+    const lowerDistrict = district.toLowerCase()
+    for (const [key, standardName] of Object.entries(mappings)) {
+      if (lowerDistrict.includes(key)) {
+        return standardName
+      }
+    }
+
+    return district
+  }
+
+  /**
+   * Parse numeric values safely
+   */
+  private parseNumber(value: any): number {
+    if (typeof value === 'number') return value
+    if (typeof value === 'string') {
+      const num = parseFloat(value.replace(/[^0-9.-]/g, ''))
+      return isNaN(num) ? 0 : num
+    }
+    return 0
+  }
 
   /**
    * Get real WA Police crime data for a district
-   * Based on authentic WA Police annual crime statistics
+   * Tries Excel data first, falls back to statistical data
    */
   async getCrimeDataForDistrict(district: string): Promise<RealCrimeData | null> {
+    await this.initialize()
+
     // Check cache first
     if (this.cache.has(district)) {
       return this.cache.get(district)!
     }
 
-    // Use real WA Police statistical data
-    const realData = this.getRealDistrictCrimeData(district)
+    // Try to build data from Excel first
+    let excelData: RealCrimeData | null = null
+    if (this.excelDataCache.size > 0) {
+      excelData = this.buildCrimeDataFromExcel(district)
+    }
+
+    // Use Excel data if available, otherwise fall back to statistical data
+    const realData = excelData || this.getRealDistrictCrimeData(district)
 
     if (realData) {
       this.cache.set(district, realData)
+      if (excelData) {
+        console.log(`Using real Excel data for ${district}`)
+      } else {
+        console.log(`Using statistical fallback data for ${district}`)
+      }
     }
 
     return realData
+  }
+
+  /**
+   * Build crime data from parsed Excel data
+   */
+  private buildCrimeDataFromExcel(district: string): RealCrimeData | null {
+    const districtOffences: any[] = []
+
+    // Collect all offences for this district from Excel cache
+    for (const [key, value] of this.excelDataCache.entries()) {
+      if (value.district === district) {
+        districtOffences.push(value)
+      }
+    }
+
+    if (districtOffences.length === 0) {
+      return null
+    }
+
+    // Build categories from Excel data
+    const categories = {
+      homicide: 0,
+      assault: 0,
+      sexual: 0,
+      robbery: 0,
+      burglary: 0,
+      theft: 0,
+      fraud: 0,
+      drugs: 0,
+      weapons: 0,
+      property: 0,
+      traffic: 0,
+      publicOrder: 0,
+      other: 0
+    }
+
+    let totalOffences = 0
+
+    for (const offence of districtOffences) {
+      const offenceType = offence.offence.toLowerCase()
+      const count = offence.count
+
+      totalOffences += count
+
+      // Categorize offences
+      if (offenceType.includes('homicide') || offenceType.includes('murder')) {
+        categories.homicide += count
+      } else if (offenceType.includes('assault') || offenceType.includes('violence')) {
+        categories.assault += count
+      } else if (offenceType.includes('sexual') || offenceType.includes('rape')) {
+        categories.sexual += count
+      } else if (offenceType.includes('robbery') || offenceType.includes('armed')) {
+        categories.robbery += count
+      } else if (offenceType.includes('burglary') || offenceType.includes('break')) {
+        categories.burglary += count
+      } else if (offenceType.includes('theft') || offenceType.includes('steal')) {
+        categories.theft += count
+      } else if (offenceType.includes('fraud') || offenceType.includes('deception')) {
+        categories.fraud += count
+      } else if (offenceType.includes('drug') || offenceType.includes('narcotic')) {
+        categories.drugs += count
+      } else if (offenceType.includes('weapon') || offenceType.includes('firearm')) {
+        categories.weapons += count
+      } else if (offenceType.includes('property') || offenceType.includes('damage')) {
+        categories.property += count
+      } else if (offenceType.includes('traffic') || offenceType.includes('driving')) {
+        categories.traffic += count
+      } else if (offenceType.includes('public order') || offenceType.includes('disorderly')) {
+        categories.publicOrder += count
+      } else {
+        categories.other += count
+      }
+    }
+
+    return {
+      district,
+      totalOffences,
+      year: 2023,
+      categories
+    }
   }
 
   /**

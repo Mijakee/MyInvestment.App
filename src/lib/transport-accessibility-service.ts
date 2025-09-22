@@ -231,9 +231,9 @@ export async function loadTransportStopsForArea(
       console.warn('Cache also failed:', cacheError)
     }
 
-    console.warn('No cached data available, falling back to mock data as last resort')
-    // Fallback to mock data only as absolute last resort
-    return generateMockTransportStops(centerLat, centerLng, radiusKm)
+    console.error('No real transport data or cache available - returning empty array')
+    // No fallback to mock data - return empty array to maintain data integrity
+    return []
   }
 }
 
@@ -279,66 +279,7 @@ function estimateFrequencyFromStopName(stopName: string): number {
   return 2 + Math.random() * 4 // 2-6 services per hour
 }
 
-/**
- * Generate realistic mock transport data for testing
- */
-function generateMockTransportStops(
-  centerLat: number,
-  centerLng: number,
-  radiusKm: number
-): TransportStop[] {
-  const stops: TransportStop[] = []
-
-  // Density varies by area type (urban vs suburban vs rural)
-  const distanceFromPerth = calculateDistance(centerLat, centerLng, -31.9505, 115.8605) / 1000
-
-  let stopDensity: number
-  let trainLikelihood: number
-
-  if (distanceFromPerth <= 10) {
-    // Urban - high density
-    stopDensity = 8 + Math.random() * 12 // 8-20 stops
-    trainLikelihood = 0.3
-  } else if (distanceFromPerth <= 80) {
-    // Suburban - medium density
-    stopDensity = 3 + Math.random() * 8 // 3-11 stops
-    trainLikelihood = 0.15
-  } else {
-    // Rural - low density
-    stopDensity = 0 + Math.random() * 3 // 0-3 stops
-    trainLikelihood = 0.05
-  }
-
-  for (let i = 0; i < stopDensity; i++) {
-    // Random location within radius
-    const angle = Math.random() * 2 * Math.PI
-    const distance = Math.random() * radiusKm * 1000
-    const lat = centerLat + (distance * Math.cos(angle)) / 111000
-    const lng = centerLng + (distance * Math.sin(angle)) / (111000 * Math.cos(centerLat * Math.PI / 180))
-
-    const isTrainStop = Math.random() < trainLikelihood
-    const isFerryStop = distanceFromPerth <= 20 && Math.random() < 0.05 // Only near Perth/Fremantle
-
-    stops.push({
-      id: `stop_${i}`,
-      name: `${isTrainStop ? 'Train' : isFerryStop ? 'Ferry' : 'Bus'} Stop ${i + 1}`,
-      type: isTrainStop ? 'train' : isFerryStop ? 'ferry' : 'bus',
-      latitude: lat,
-      longitude: lng,
-      accessibility_features: {
-        wheelchair_accessible: Math.random() > 0.3,
-        audio_announcements: Math.random() > 0.4,
-        tactile_indicators: Math.random() > 0.5,
-        shelter: Math.random() > 0.4,
-        seating: Math.random() > 0.3
-      },
-      routes: [`Route ${Math.floor(Math.random() * 100) + 1}`],
-      frequency_score: isTrainStop ? 4 + Math.random() * 4 : 1 + Math.random() * 4
-    })
-  }
-
-  return stops
-}
+// Mock transport generation removed - system uses only real WA PTA data or cached data
 
 /**
  * Classify transport accessibility level

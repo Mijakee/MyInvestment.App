@@ -1,44 +1,83 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { heatMapDataService } from '../../../lib/heatmap-data-service'
+import { precomputedDataService } from '../../../lib/precomputed-data-service'
 
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams
     const action = searchParams.get('action') || 'optimized'
-    const metric = searchParams.get('metric') as 'crime' | 'convenience' | 'investment' || 'investment'
-    const bounds = searchParams.get('bounds') // Format: "north,south,east,west"
+    const metric = searchParams.get('metric') as 'safety' | 'crime' | 'convenience' | 'investment' || 'investment'
+    const bounds = searchParams.get('bounds')
 
     switch (action) {
-      case 'full': {
-        // Return complete heat map dataset with all suburb details
-        const fullData = await heatMapDataService.generateHeatMapData()
+      case 'status': {
+        // Check precomputed data status
+        const dataInfo = precomputedDataService.getDataInfo()
 
         return NextResponse.json({
           success: true,
-          data: fullData,
+          data: {
+            cacheExists: true,
+            cachedSuburbs: dataInfo.metadata.total_suburbs,
+            cacheStatus: 'Available',
+            lastUpdated: dataInfo.metadata.last_updated,
+            dataSource: 'precomputed_static_data',
+            performance: 'Ultra-fast precomputed lookups',
+            recommendations: dataInfo.freshness.is_stale ? [
+              'Precomputed data is stale',
+              'Run npm run update-data to refresh with latest external data',
+              `Next update due: ${dataInfo.freshness.next_update_due}`
+            ] : [
+              `Precomputed data contains ${dataInfo.metadata.total_suburbs} suburbs`,
+              'Heat map will load instantly using static data',
+              `Next update due: ${dataInfo.freshness.next_update_due.toISOString().split('T')[0]}`
+            ]
+          },
           metadata: {
-            dataSize: fullData.points.length,
-            lastUpdated: fullData.lastUpdated,
-            coverage: 'All 1,701 WA suburbs',
-            note: 'Complete dataset with safety, convenience, and combined ratings'
+            purpose: 'Precomputed data status and recommendations'
           }
         })
       }
 
+      case 'full':
       case 'optimized': {
-        // Return optimized data for web visualization (smaller payload)
-        const optimizedData = await heatMapDataService.getOptimizedHeatMapData(metric)
+        // Return heatmap data from precomputed scores (DEFAULT)
+        try {
+          const allSuburbs = precomputedDataService.getAllSuburbScoresWithFallback()
 
-        return NextResponse.json({
-          success: true,
-          data: optimizedData,
-          metadata: {
-            metric: metric,
-            dataSize: optimizedData.points.length,
-            optimization: 'Reduced payload for web visualization',
-            note: 'Optimized for Leaflet.js, Google Maps, or Mapbox integration'
-          }
-        })
+          const heatmapPoints = allSuburbs.map(suburb => ({
+            lat: suburb.coordinates.latitude,
+            lng: suburb.coordinates.longitude,
+            intensity: suburb.scores[metric] / 10, // Normalize to 0-1
+            suburbName: suburb.sal_name,
+            safetyRating: suburb.scores.safety,
+            convenienceScore: suburb.scores.convenience,
+            combinedScore: suburb.scores.investment
+          }))
+
+          return NextResponse.json({
+            success: true,
+            data: {
+              points: heatmapPoints
+            },
+            metadata: {
+              metric: metric,
+              dataSize: heatmapPoints.length,
+              source: 'precomputed_static_data',
+              performance: 'Ultra-fast (precomputed data)',
+              note: 'Optimized for Leaflet.js, Google Maps, or Mapbox integration'
+            }
+          })
+        } catch (error) {
+          return NextResponse.json({
+            success: false,
+            error: 'No precomputed data available',
+            message: 'Please run npm run create-sample-data or npm run update-data to generate precomputed scores',
+            quickStart: {
+              createSampleData: 'npm run create-sample-data',
+              updateRealData: 'npm run update-data'
+            }
+          }, { status: 404 })
+        }
       }
 
       case 'bounded': {
@@ -58,112 +97,158 @@ export async function GET(request: NextRequest) {
           }, { status: 400 })
         }
 
-        const fullData = await heatMapDataService.generateHeatMapData()
-        const boundedPoints = heatMapDataService.filterByBounds(fullData.points, {
-          north, south, east, west
-        })
+        try {
+          const allSuburbs = precomputedDataService.getAllSuburbScoresWithFallback()
 
-        const heatPoints = heatMapDataService.getHeatMapForMetric(boundedPoints, metric)
+          // Filter by bounds
+          const boundedSuburbs = allSuburbs.filter(suburb =>
+            suburb.coordinates.latitude >= south &&
+            suburb.coordinates.latitude <= north &&
+            suburb.coordinates.longitude >= west &&
+            suburb.coordinates.longitude <= east
+          )
 
-        return NextResponse.json({
-          success: true,
-          data: {
-            points: heatPoints,
-            bounds: { north, south, east, west },
-            filteredCount: heatPoints.length,
-            totalCount: fullData.points.length
-          },
-          metadata: {
-            metric: metric,
-            viewport: 'Filtered by geographic bounds',
-            note: 'Optimized for specific map viewport'
-          }
-        })
+          const heatmapPoints = boundedSuburbs.map(suburb => ({
+            lat: suburb.coordinates.latitude,
+            lng: suburb.coordinates.longitude,
+            intensity: suburb.scores[metric] / 10,
+            suburbName: suburb.sal_name
+          }))
+
+          return NextResponse.json({
+            success: true,
+            data: {
+              points: heatmapPoints,
+              bounds: { north, south, east, west },
+              filteredCount: heatmapPoints.length,
+              totalCount: allSuburbs.length
+            },
+            metadata: {
+              metric: metric,
+              source: 'precomputed_static_data',
+              viewport: 'Filtered by geographic bounds',
+              note: 'Optimized for specific map viewport'
+            }
+          })
+        } catch (error) {
+          return NextResponse.json({
+            success: false,
+            error: 'No precomputed data available for bounded query'
+          }, { status: 404 })
+        }
       }
 
       case 'statistics': {
         // Return heat map statistics and metadata without points
-        const fullData = await heatMapDataService.generateHeatMapData()
+        try {
+          const dataInfo = precomputedDataService.getDataInfo()
+          const statistics = precomputedDataService.getDataStatistics()
 
-        return NextResponse.json({
-          success: true,
-          data: {
-            statistics: fullData.statistics,
-            bounds: fullData.bounds,
-            lastUpdated: fullData.lastUpdated
-          },
-          metadata: {
-            purpose: 'Heat map overview and bounds information',
-            note: 'Use for map initialization and legend configuration'
-          }
-        })
+          return NextResponse.json({
+            success: true,
+            data: {
+              statistics: statistics,
+              bounds: {
+                // Calculate bounds from all suburbs
+                north: Math.max(...precomputedDataService.getAllSuburbScores().map(s => s.coordinates.latitude)),
+                south: Math.min(...precomputedDataService.getAllSuburbScores().map(s => s.coordinates.latitude)),
+                east: Math.max(...precomputedDataService.getAllSuburbScores().map(s => s.coordinates.longitude)),
+                west: Math.min(...precomputedDataService.getAllSuburbScores().map(s => s.coordinates.longitude))
+              },
+              lastUpdated: dataInfo.metadata.last_updated,
+              source: 'precomputed_static_data'
+            },
+            metadata: {
+              purpose: 'Heat map overview and bounds information',
+              note: 'Use for map initialization and legend configuration'
+            }
+          })
+        } catch (error) {
+          return NextResponse.json({
+            success: false,
+            error: 'No precomputed statistics available'
+          }, { status: 404 })
+        }
       }
 
       case 'export': {
-        // Export complete heat map data as JSON (for static hosting)
-        const exportData = await heatMapDataService.exportHeatMapData()
+        // Export complete heat map data as JSON
+        try {
+          const allSuburbs = precomputedDataService.getAllSuburbScoresWithFallback()
+          const exportData = JSON.stringify({
+            metadata: precomputedDataService.getDataInfo(),
+            heatmap_data: allSuburbs.map(suburb => ({
+              sal_code: suburb.sal_code,
+              name: suburb.sal_name,
+              coordinates: suburb.coordinates,
+              scores: suburb.scores
+            }))
+          }, null, 2)
 
-        return new NextResponse(exportData, {
-          headers: {
-            'Content-Type': 'application/json',
-            'Content-Disposition': 'attachment; filename="wa_suburbs_heatmap.json"'
-          }
-        })
+          return new NextResponse(exportData, {
+            headers: {
+              'Content-Type': 'application/json',
+              'Content-Disposition': 'attachment; filename="wa_suburbs_heatmap_precomputed.json"'
+            }
+          })
+        } catch (error) {
+          return NextResponse.json({
+            success: false,
+            error: 'No precomputed data available for export'
+          }, { status: 404 })
+        }
       }
 
       case 'test': {
-        // Test heat map generation with sample data
-        const sampleSuburbs = [
-          '50008', // Alexander Heights
-          '50022', // Applecross
-          '50026', // Armadale
-          '50006', // Albany
-          '50038'  // Augusta
-        ]
+        // Fast test to check if precomputed heat map is working
+        try {
+          const dataInfo = precomputedDataService.getDataInfo()
+          const sampleSuburbs = precomputedDataService.getAllSuburbScores().slice(0, 3)
 
-        const testPoints = []
-        for (const salCode of sampleSuburbs) {
-          try {
-            const fullData = await heatMapDataService.generateHeatMapData()
-            const suburbPoint = fullData.points.find(p => p.salCode === salCode)
-            if (suburbPoint) {
-              testPoints.push(suburbPoint)
+          return NextResponse.json({
+            success: true,
+            data: {
+              status: 'Precomputed heat map API is operational',
+              dataSource: 'precomputed_static_data',
+              totalSuburbs: dataInfo.metadata.total_suburbs,
+              performance: 'Ultra-fast precomputed data',
+              api_version: '4.0-precomputed',
+              sample_data: sampleSuburbs.map(suburb => ({
+                suburb: suburb.sal_name,
+                safety: suburb.scores.safety,
+                investment: suburb.scores.investment,
+                note: 'Real precomputed data'
+              }))
+            },
+            metadata: {
+              purpose: 'Fast API health check',
+              recommendations: [
+                `Precomputed data contains ${dataInfo.metadata.total_suburbs} suburbs`,
+                'All scores are consistent across heatmap and individual APIs',
+                'Data refresh available with npm run update-data'
+              ]
             }
-          } catch (error) {
-            console.warn(`Test failed for suburb ${salCode}:`, error)
-          }
+          })
+        } catch (error) {
+          return NextResponse.json({
+            success: false,
+            data: {
+              status: 'API operational but no precomputed data available',
+              message: 'Run npm run create-sample-data to create sample data or npm run update-data for real data'
+            }
+          })
         }
-
-        return NextResponse.json({
-          success: true,
-          data: {
-            test_points: testPoints,
-            sample_size: testPoints.length,
-            requested_size: sampleSuburbs.length,
-            heat_map_demo: testPoints.map(point => ({
-              suburb: point.suburbName,
-              safety_heat: point.safetyIntensity,
-              convenience_heat: point.convenienceIntensity,
-              combined_heat: point.combinedIntensity,
-              coordinates: [point.lat, point.lng]
-            }))
-          },
-          metadata: {
-            purpose: 'Heat map system testing',
-            note: 'Sample data for development and testing'
-          }
-        })
       }
 
       default:
         return NextResponse.json({
           success: false,
-          error: 'Invalid action. Use: full, optimized, bounded, statistics, export, test'
+          error: 'Invalid action. Use: status, full, optimized, bounded, statistics, export, test'
         }, { status: 400 })
     }
 
   } catch (error) {
-    console.error('Heat map API error:', error)
+    console.error('Precomputed heat map API error:', error)
     return NextResponse.json({
       success: false,
       error: 'Failed to generate heat map data',

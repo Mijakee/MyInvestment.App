@@ -4,9 +4,9 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import { safetyRatingService } from '../../../../lib/safety-rating-service'
+import { safetyRatingService } from '../../../../lib/data-sources/safety-rating-service'
 import { absCensusService } from '../../../../lib/abs-census-service'
-import { waPoliceCrimeService } from '../../../../lib/wa-police-crime-service'
+import { waPoliceCrimeService } from '../../../../lib/data-sources/wa-police-crime-service'
 import { waSuburbLoader } from '../../../../lib/wa-suburb-loader'
 
 interface IntegrationTestResult {

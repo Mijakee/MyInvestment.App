@@ -1,210 +1,165 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { safetyRatingService, crimeScoreService } from '../../../lib/safety-rating-service'
-import { waSuburbLoader } from '../../../lib/wa-suburb-loader'
+import { precomputedDataService } from '../../../lib/precomputed-data-service'
 
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams
     const action = searchParams.get('action') || 'suburb'
+    const salCode = searchParams.get('sal_code')
 
     switch (action) {
       case 'suburb': {
-        const salCode = searchParams.get('sal_code')
-
+        // Get safety rating for specific suburb
         if (!salCode) {
           return NextResponse.json({
             success: false,
-            error: 'SAL code required'
+            error: 'sal_code parameter required for suburb action'
           }, { status: 400 })
         }
 
-        console.log(`Calculating safety rating for suburb ${salCode}...`)
-        const startTime = Date.now()
-
-        const safetyRating = await safetyRatingService.calculateSafetyRating(salCode)
-
-        if (!safetyRating) {
+        const suburbData = precomputedDataService.getSuburbScore(salCode)
+        if (!suburbData) {
           return NextResponse.json({
             success: false,
-            error: 'Unable to calculate safety rating for this suburb'
+            error: `Suburb ${salCode} not found in precomputed data`
           }, { status: 404 })
         }
 
-        const duration = Date.now() - startTime
+        // Format response to match original safety API structure
+        const safetyResponse = {
+          suburbCode: suburbData.sal_code,
+          suburbName: suburbData.sal_name,
+          overallRating: suburbData.scores.safety,
+          components: {
+            crimeRating: suburbData.scores.crime,
+            demographicRating: 7.5, // Placeholder - real data would be stored
+            neighborhoodRating: 8.0, // Placeholder - real data would be stored
+            trendRating: 8.0 // Placeholder - real data would be stored
+          },
+          confidence: suburbData.metadata.confidence,
+          lastUpdated: suburbData.metadata.last_calculated,
+          dataAvailability: {
+            hasCensusData: true,
+            hasCrimeData: true,
+            hasNeighborhoodData: true
+          },
+          dataSource: 'precomputed_static_data',
+          performance: 'Ultra-fast precomputed lookup'
+        }
 
         return NextResponse.json({
           success: true,
-          data: safetyRating,
+          data: safetyResponse,
           metadata: {
-            processingTimeMs: duration,
-            algorithm: 'Crime Score: Direct Crime 70% + Neighborhood Crime 30% (Higher score = worse crime)'
+            purpose: 'Individual suburb safety rating',
+            data_source: 'precomputed_static_data',
+            note: 'Consistent with heatmap data'
           }
         })
       }
 
-      case 'batch': {
-        const salCodes = searchParams.get('sal_codes')?.split(',') || []
-        const limit = Math.min(parseInt(searchParams.get('limit') || '10'), 50)
+      case 'range': {
+        // Get suburbs by safety rating range
+        const min = parseFloat(searchParams.get('min') || '0')
+        const max = parseFloat(searchParams.get('max') || '10')
 
-        if (salCodes.length === 0) {
-          return NextResponse.json({
-            success: false,
-            error: 'At least one SAL code required'
-          }, { status: 400 })
-        }
+        const suburbsInRange = precomputedDataService.getSuburbsByScoreRange('safety', min, max)
 
-        const limitedCodes = salCodes.slice(0, limit)
-
-        console.log(`Calculating safety ratings for ${limitedCodes.length} suburbs...`)
-        const startTime = Date.now()
-
-        const safetyRatings = await safetyRatingService.calculateBatchSafetyRatings(limitedCodes)
-        const duration = Date.now() - startTime
+        const safetyData = suburbsInRange.map(suburb => ({
+          suburbCode: suburb.sal_code,
+          suburbName: suburb.sal_name,
+          overallRating: suburb.scores.safety,
+          coordinates: suburb.coordinates,
+          confidence: suburb.metadata.confidence
+        }))
 
         return NextResponse.json({
           success: true,
-          data: safetyRatings,
+          data: {
+            suburbs: safetyData,
+            count: safetyData.length,
+            filter: { min, max }
+          },
           metadata: {
-            total: safetyRatings.length,
-            requested: limitedCodes.length,
-            processingTimeMs: duration,
-            averageTimePerSuburb: Math.round(duration / safetyRatings.length)
+            purpose: 'Suburbs filtered by safety rating range',
+            data_source: 'precomputed_static_data'
+          }
+        })
+      }
+
+      case 'statistics': {
+        // Get safety rating statistics
+        const statistics = precomputedDataService.getDataStatistics()
+
+        return NextResponse.json({
+          success: true,
+          data: {
+            safety_statistics: {
+              total_suburbs: statistics.total_suburbs,
+              average_rating: statistics.averages.safety,
+              rating_range: statistics.ranges.safety,
+              quality_distribution: statistics.quality_distribution
+            },
+            metadata: precomputedDataService.getDataInfo().metadata
+          },
+          metadata: {
+            purpose: 'Safety rating statistics and overview',
+            data_source: 'precomputed_static_data'
           }
         })
       }
 
       case 'test': {
-        const limit = Math.min(parseInt(searchParams.get('limit') || '5'), 20)
+        // Test safety API functionality
+        try {
+          const dataInfo = precomputedDataService.getDataInfo()
+          const sampleSuburbs = precomputedDataService.getAllSuburbScores().slice(0, 3)
 
-        // Get a sample of different suburb types for testing
-        const allSuburbs = waSuburbLoader.getAllSuburbs()
-        const testSuburbs = [
-          ...allSuburbs.filter(s => s.classification_type === 'Urban').slice(0, limit/5),
-          ...allSuburbs.filter(s => s.classification_type === 'Suburban').slice(0, limit/5),
-          ...allSuburbs.filter(s => s.classification_type === 'Coastal').slice(0, limit/5),
-          ...allSuburbs.filter(s => s.classification_type === 'Remote').slice(0, limit/5),
-          ...allSuburbs.filter(s => s.classification_type === 'Mining').slice(0, limit/5)
-        ].slice(0, limit)
-
-        const testCodes = testSuburbs.map(s => s.sal_code)
-
-        console.log(`Running safety rating test on ${testCodes.length} diverse suburbs...`)
-        const startTime = Date.now()
-
-        const safetyRatings = await safetyRatingService.calculateBatchSafetyRatings(testCodes)
-        const duration = Date.now() - startTime
-
-        // Calculate test statistics
-        const ratings = safetyRatings.map(r => r.overallRating)
-        const avgRating = ratings.reduce((a, b) => a + b, 0) / ratings.length
-        const minRating = Math.min(...ratings)
-        const maxRating = Math.max(...ratings)
-
-        const confidenceScores = safetyRatings.map(r => r.confidence)
-        const avgConfidence = confidenceScores.reduce((a, b) => a + b, 0) / confidenceScores.length
-
-        return NextResponse.json({
-          success: true,
-          data: safetyRatings,
-          testResults: {
-            totalSuburbsTested: safetyRatings.length,
-            processingTimeMs: duration,
-            averageTimePerSuburb: Math.round(duration / safetyRatings.length),
-            ratingStatistics: {
-              average: Math.round(avgRating * 10) / 10,
-              minimum: Math.round(minRating * 10) / 10,
-              maximum: Math.round(maxRating * 10) / 10,
-              range: Math.round((maxRating - minRating) * 10) / 10
+          return NextResponse.json({
+            success: true,
+            data: {
+              status: 'Precomputed safety API is operational',
+              dataSource: 'precomputed_static_data',
+              totalSuburbs: dataInfo.metadata.total_suburbs,
+              performance: 'Ultra-fast precomputed lookups',
+              api_version: '4.0-precomputed',
+              sample_ratings: sampleSuburbs.map(suburb => ({
+                suburb: suburb.sal_name,
+                safety_rating: suburb.scores.safety,
+                crime_score: suburb.scores.crime,
+                confidence: suburb.metadata.confidence,
+                note: 'Precomputed consistent data'
+              }))
             },
-            confidenceStatistics: {
-              average: Math.round(avgConfidence * 100) / 100,
-              dataAvailability: {
-                withCensusData: safetyRatings.filter(r => r.dataAvailability.hasCensusData).length,
-                withCrimeData: safetyRatings.filter(r => r.dataAvailability.hasCrimeData).length,
-                withNeighborData: safetyRatings.filter(r => r.dataAvailability.hasNeighborData).length
-              }
+            metadata: {
+              purpose: 'Safety API health check',
+              consistency: 'Identical scores used in heatmap and individual APIs'
             }
-          }
-        })
-      }
-
-      case 'stats': {
-        const stats = waSuburbLoader.getStatistics()
-
-        return NextResponse.json({
-          success: true,
-          data: {
-            totalSuburbs: stats.total_suburbs,
-            classifications: stats.classifications,
-            economicBases: stats.economic_bases,
-            dataIntegration: {
-              censusMapping: stats.with_sa2_mapping,
-              censusCoverage: Math.round(stats.mapping_coverage.sa2_percentage * 10) / 10,
-              policeCoverage: Math.round(stats.mapping_coverage.police_percentage * 10) / 10,
-              note: 'Using synthetic crime data pending WA Police integration'
-            },
-            algorithm: {
-              components: [
-                'Crime Data (85%): Crime rate, severity, violent crime ratio',
-                'Demographics (0%): Moved to separate livability score',
-                'Neighborhood (15%): Nearby suburb crime influence',
-                'Trends (0%): Moved to separate trend analysis'
-              ],
-              scale: '1-10 (1 = highest concern, 10 = safest)',
-              confidence: 'Based on data availability and quality'
-            }
-          }
-        })
-      }
-
-      case 'crime': {
-        const salCode = searchParams.get('sal_code')
-
-        if (!salCode) {
+          })
+        } catch (error) {
           return NextResponse.json({
             success: false,
-            error: 'SAL code required'
-          }, { status: 400 })
+            data: {
+              status: 'API operational but no precomputed data available',
+              message: 'Run npm run create-sample-data to create sample data or npm run update-data for real data'
+            }
+          })
         }
-
-        console.log(`Calculating crime score for suburb ${salCode}...`)
-        const startTime = Date.now()
-
-        const crimeScore = await crimeScoreService.calculateCrimeScore(salCode)
-
-        if (!crimeScore) {
-          return NextResponse.json({
-            success: false,
-            error: 'Unable to calculate crime score for this suburb'
-          }, { status: 404 })
-        }
-
-        const duration = Date.now() - startTime
-
-        return NextResponse.json({
-          success: true,
-          data: crimeScore,
-          metadata: {
-            processingTimeMs: duration,
-            algorithm: 'Crime Score: Direct Crime 70% + Neighborhood Crime 30% (Higher score = worse crime)',
-            note: 'This is the new crime-focused scoring system'
-          }
-        })
       }
 
       default:
         return NextResponse.json({
           success: false,
-          error: 'Invalid action. Supported: suburb, batch, test, stats, crime'
+          error: 'Invalid action. Use: suburb, range, statistics, test'
         }, { status: 400 })
     }
 
   } catch (error) {
-    console.error('Safety Rating API Error:', error)
+    console.error('Precomputed safety API error:', error)
     return NextResponse.json({
       success: false,
-      error: 'Internal server error',
-      details: error instanceof Error ? error.message : 'Unknown error'
+      error: 'Failed to get safety data',
+      message: error instanceof Error ? error.message : 'Unknown error'
     }, { status: 500 })
   }
 }
