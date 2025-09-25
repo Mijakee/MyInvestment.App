@@ -191,7 +191,7 @@ export async function GET(request: NextRequest) {
             success: false,
             data: {
               status: 'API operational but no precomputed data available',
-              message: 'Run npm run create-sample-data to create sample data or npm run update-data for real data'
+              message: 'Run npm run update-data for real data'
             }
           })
         }

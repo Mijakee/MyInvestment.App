@@ -10,7 +10,8 @@
     "type-check": "tsc --noEmit",
     "update-data": "tsx src/scripts/update-precomputed-data.ts",
     "update-data:specific": "tsx src/scripts/update-precomputed-data.ts --specific",
-    "create-sample-data": "tsx src/scripts/create-sample-data.ts"
+    "generate-osm-data": "tsx src/scripts/generate-osm-data.ts",
+    "collect-comprehensive-osm": "tsx src/scripts/comprehensive-osm-collector.ts"
   },
   "dependencies": {
     "@ngageoint/geopackage": "^4.2.6",
@@ -19,6 +20,7 @@
     "@types/node-fetch": "^2.6.13",
     "@types/react-dom": "^18",
     "autoprefixer": "^10.4.20",
+    "better-sqlite3": "^12.3.0",
     "d3-queue": "^3.0.7",
     "firebase": "^10.14.1",
     "geopackage": "^1.0.2",

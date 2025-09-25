@@ -1,7 +1,7 @@
 {
   "_metadata": {
     "version": "1.0.0",
-    "last_updated": "2025-09-22T12:24:55.154Z",
+    "last_updated": "2025-09-22T15:08:53.128Z",
     "total_suburbs": 1701,
     "data_sources": {
       "wa_police_crime": "2025-09-22",
@@ -21,8 +21,8 @@
         "longitude": 115.48841420871507
       },
       "scores": {
-        "safety": 9.4,
-        "crime": 10,
+        "safety": 9.3,
+        "crime": 9.9,
         "convenience": 1,
         "investment": 6
       },
@@ -33,7 +33,7 @@
         "health_facilities": 0
       },
       "metadata": {
-        "last_calculated": "2025-09-22T12:24:55.154Z",
+        "last_calculated": "2025-09-22T15:08:53.128Z",
         "data_quality": "medium",
         "confidence": 0.86
       }

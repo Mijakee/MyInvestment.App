@@ -105,14 +105,14 @@ class RealWAPoliceParser {
 
     console.log(`Processing ${sheetName}: ${rows.length} rows`)
 
-    // Look for key columns
-    const districtColIndex = this.findColumnIndex(headers, ['district', 'police district', 'region'])
-    const offenceColIndex = this.findColumnIndex(headers, ['offence', 'crime', 'offence type'])
+    // Look for key columns based on actual Excel structure
+    const districtColIndex = this.findColumnIndex(headers, ['website region', 'district', 'police district', 'region'])
+    const offenceColIndex = this.findColumnIndex(headers, ['wapol_hierarchy_lvl1', 'offence', 'crime', 'offence type'])
     const countColIndex = this.findColumnIndex(headers, ['count', 'number', 'total'])
 
     if (districtColIndex !== -1 && offenceColIndex !== -1 && countColIndex !== -1) {
-      // Process first 100 rows for performance
-      for (let i = 0; i < Math.min(rows.length, 100); i++) {
+      // Process all rows to get complete crime data
+      for (let i = 0; i < rows.length; i++) {
         const row = rows[i]
         try {
           const district = this.cleanDistrictName(row[districtColIndex])
@@ -154,23 +154,36 @@ class RealWAPoliceParser {
   private cleanDistrictName(value: any): string {
     if (!value) return ''
 
-    const district = value.toString().trim()
+    let district = value.toString().trim()
+
+    // Handle the actual Excel format: "ARMADALE DISTRICT" -> "Armadale District"
+    if (district.toUpperCase() === district && district.includes(' DISTRICT')) {
+      // Convert from "ARMADALE DISTRICT" to "Armadale District"
+      district = district.toLowerCase().replace(/\b\w/g, l => l.toUpperCase())
+    }
+
+    // Additional mappings for variations
     const mappings: Record<string, string> = {
-      'perth': 'Perth District',
-      'fremantle': 'Fremantle District',
-      'armadale': 'Armadale District',
-      'cannington': 'Cannington District',
-      'joondalup': 'Joondalup District',
-      'mandurah': 'Mandurah District',
-      'midland': 'Midland District',
-      'mirrabooka': 'Mirrabooka District'
+      'perth district': 'Perth District',
+      'fremantle district': 'Fremantle District',
+      'armadale district': 'Armadale District',
+      'cannington district': 'Cannington District',
+      'joondalup district': 'Joondalup District',
+      'mandurah district': 'Mandurah District',
+      'midland district': 'Midland District',
+      'mirrabooka district': 'Mirrabooka District',
+      'goldfields-esperance district': 'Goldfields-Esperance District',
+      'great southern district': 'Great Southern District',
+      'kimberley district': 'Kimberley District',
+      'mid west-gascoyne district': 'Mid West-Gascoyne District',
+      'pilbara district': 'Pilbara District',
+      'south west district': 'South West District',
+      'wheatbelt district': 'Wheatbelt District'
     }
 
     const lowerDistrict = district.toLowerCase()
-    for (const [key, standardName] of Object.entries(mappings)) {
-      if (lowerDistrict.includes(key)) {
-        return standardName
-      }
+    if (mappings[lowerDistrict]) {
+      return mappings[lowerDistrict]
     }
 
     return district
@@ -227,9 +240,16 @@ class RealWAPoliceParser {
   private buildCrimeDataFromExcel(district: string): RealCrimeData | null {
     const districtOffences: any[] = []
 
+    // Convert input district to match Excel format for comparison
+    const districtVariations = [
+      district, // Original format
+      district.toUpperCase(), // Convert to all caps to match Excel
+      this.cleanDistrictName(district.toUpperCase()) // Clean version
+    ]
+
     // Collect all offences for this district from Excel cache
     for (const [key, value] of this.excelDataCache.entries()) {
-      if (value.district === district) {
+      if (districtVariations.includes(value.district)) {
         districtOffences.push(value)
       }
     }

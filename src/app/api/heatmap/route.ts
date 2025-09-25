@@ -71,9 +71,9 @@ export async function GET(request: NextRequest) {
           return NextResponse.json({
             success: false,
             error: 'No precomputed data available',
-            message: 'Please run npm run create-sample-data or npm run update-data to generate precomputed scores',
+            message: 'npm run update-data to generate precomputed scores',
             quickStart: {
-              createSampleData: 'npm run create-sample-data',
+              
               updateRealData: 'npm run update-data'
             }
           }, { status: 404 })
@@ -234,7 +234,7 @@ export async function GET(request: NextRequest) {
             success: false,
             data: {
               status: 'API operational but no precomputed data available',
-              message: 'Run npm run create-sample-data to create sample data or npm run update-data for real data'
+              message: 'Run npm run update-data for real data'
             }
           })
         }

@@ -1,40 +1,8 @@
-# MyInvestmentApp - Australian Property Safety Analysis
+# Investment App - Property Analysis Platform
 
-🎉 **PRODUCTION READY** - A comprehensive dual-metric system that analyzes real Australian Census data (2021) and WA Police crime statistics to generate both safety ratings and convenience scores for 1,701 WA suburbs, providing holistic investment guidance for property investors and homebuyers.
+A comprehensive property investment analysis platform that evaluates suburbs across Western Australia using real government data. Provides safety ratings and convenience scores to help investors and homebuyers make informed residential property decisions.
 
-## 🎯 Key Features
-
-### 🔒 Enhanced Crime Severity System
-- **40+ Granular Crime Types**: Preserves specific offences like "Murder", "Attempted Murder", "Manslaughter" instead of broad categories
-- **Individual Severity Scoring**: Each crime type has specific severity (1-100) and impact weighting (1.0-3.0)
-- **Weighted Impact Calculation**: More severe crimes have exponentially greater impact on safety ratings
-- **Logarithmic Normalization**: Complex crime data converted to digestible 1-10 safety scale
-
-### 🗺️ Geographic Neighborhood Analysis
-- **Spatial Detection**: Uses Turf.js for accurate neighbor identification within specified distances
-- **Distance-Weighted Influence**: Exponential decay function for realistic neighborhood impact
-- **SA2-Police District Mapping**: 88.9% coverage correspondence between Census areas and crime jurisdictions
-### 🔒📍 Dual Metric System (CORRECTED ARCHITECTURE)
-- **Safety Rating**: Crime (50%) + Demographics (25%) + Neighborhood (15%) + Trends (10%)
-- **Convenience Score**: Transport (40%) + Shopping (25%) + Education (20%) + Recreation (15%)
-- **Combined Investment Index**: Safety (60%) + Convenience (40%) = Overall Investment Score
-
-### 📊 Real-Time Ratings & Scoring
-- **100% Real Data**: Complete integration of ABS 2021 Census and WA Police crime statistics
-- **1,701 WA Suburbs**: Full state-wide coverage from Perth metro to remote mining towns
-- **Interactive Frontend**: Complete suburb browsing, search, filtering, and detailed analysis pages
-- **Production Performance**: <20ms API responses, 100% health score, 89%+ confidence ratings
-
-### 🗺️ Interactive Boundary Heat Map Visualization (PRODUCTION READY)
-- **Suburb Boundaries**: Real suburb polygons from ABS SAL 2021 shapefiles (1,701 suburbs)
-- **Interactive Features**: Click suburbs for instant popups, hover for highlighting effects
-- **Metric-Specific Display**: Dynamic color coding based on Safety, Convenience, or Investment scores
-- **Intuitive Color Gradients**: Light colors = good scores, dark colors = poor scores
-- **Modal Detail Views**: Comprehensive suburb analysis with component score breakdowns
-- **Real-Time Updates**: Seamless metric switching without map reinitialization
-- **Export Capabilities**: Download complete heat map datasets for external analysis
-
-## 🚀 Quick Start
+## Quick Start
 
 ```bash
 # Install dependencies
@@ -43,241 +11,58 @@ npm install
 # Start development server
 npm run dev
 
-# Visit the application
-open http://localhost:3000
+# Test system health
+curl http://localhost:3000/api/integration/test
 ```
 
-### Explore WA Suburbs
-- **🗺️ Interactive Heat Map**: Visit `/heatmap` to explore all 1,701 WA suburbs with boundary-based visualization ✅ **PRODUCTION READY**
-  - Click suburbs for instant popups with metric-specific scores
-  - Switch between Safety, Convenience, and Investment Index views
-  - Detailed modal breakdowns with component scoring
-- **Browse Suburbs**: Visit `/suburbs` to explore all suburbs with search and filtering (in development)
-- **Interactive Demo**: Visit `/demo` to see the neighborhood-influenced safety calculation system
-- **Detailed Analysis**: Comprehensive demographic, crime, and safety analysis for every suburb
+Visit `http://localhost:3000` to access the application.
 
-## 📋 API Endpoints
+## 📚 Documentation
 
-### Core Rating APIs
-- **`GET /api/safety?sal_code={code}`** - Pure safety rating (Crime + Demographics + Neighborhood + Trends)
-- **`GET /api/convenience?action=calculate&sal_code={code}`** - Convenience score (Transport + Shopping + Education + Recreation)
-- **`GET /api/convenience?action=combined&sal_code={code}`** - Combined investment recommendation (Safety 60% + Convenience 40%)
+All comprehensive documentation is located in the `/docs` folder:
 
-### Heat Map Visualization APIs
-- **`GET /api/heatmap?action=optimized&metric={safety|convenience|combined}`** - Optimized heat map data
-- **`GET /api/heatmap?action=statistics`** - Heat map statistics and geographic bounds
-- **`GET /api/heatmap?action=export`** - Download complete heat map dataset
-- **`GET /api/data/geographic?file=wa_suburbs.geojson`** - Suburb boundary polygons (5.27MB)
+- **[📖 Complete Guide](docs/README.md)** - Main documentation hub with navigation
+- **[👤 User Guide](docs/USER_GUIDE.md)** - Understanding ratings and using the app
+- **[⚡ Developer Quick Start](docs/DEVELOPER_QUICK_START.md)** - Setup and development
+- **[🔌 API Usage Guide](docs/API_USAGE_GUIDE.md)** - API integration and examples
+- **[📊 Data Sources Guide](docs/DATA_SOURCES_GUIDE.md)** - Data explanation and quality
+- **[⚙️ Technical Documentation](docs/TECHNICAL_DOCUMENTATION.md)** - Complete technical reference
 
-### System Testing APIs
-- **`GET /api/convenience?action=test`** - Test dual metric system across multiple location types
-- **`GET /api/transport-accessibility?action=convenience-preview`** - Shows correct architectural separation
-- **`GET /api/heatmap?action=test`** - Test heat map generation with sample suburbs
-- **`GET /api/integration/test`** - Full system health check (returns 100% health score)
+## System Status ✅
 
-### Data APIs
-- **`GET /api/suburbs?limit=1701`** - All 1,701 WA suburbs with search and filtering
-- **`GET /api/suburbs?sal_code={code}`** - Individual suburb details
-- **`GET /api/abs/test?action=suburb&sal_code={code}`** - Real ABS Census data
-- **`GET /api/data/test?action=crime&sal_code={code}`** - WA Police crime statistics
+- **Health Score**: 97/100
+- **Real Data Coverage**: 95%+
+- **WA Suburbs**: 1,701 complete coverage
+- **Crime Records**: 199,800+ (WA Police 2007-2025)
+- **Facilities**: 38,862 comprehensive database
+- **API Performance**: <1 second response times
 
----
+## Key Features
 
-## 📋 **DEVELOPMENT STATUS**
+- **Safety Ratings** (1-10): Crime, demographics, neighborhood analysis
+- **Convenience Scores** (1-10): Shopping, health, transport, recreation
+- **Investment Index**: Combined guidance for property decisions
+- **Interactive Heat Maps**: Visual suburb comparisons
+- **Production APIs**: Complete backend services
 
-### ✅ **Completed Features (Production Ready)**
-- **Boundary-Based Heat Maps**: Interactive suburb polygons with real-time metric switching
-- **Dual Metric System**: Safety ratings separate from convenience scores with correct architecture
-- **Complete Geographic Data**: 1,701 WA suburb boundaries from official ABS shapefiles
-- **Intuitive Color Coding**: Light colors for good scores, dark colors for poor scores
-- **Complete API Suite**: 16+ endpoints including geographic data and heat map visualization
-- **Performance Optimized**: Efficient layer updates, proper state management, <5% Firebase impact
+## Quick API Test
 
-### 🔄 **Next Development Priorities**
-1. **Real Data Integration**: Connect ABS Census and WA Police data files
-2. **Frontend Development**: Suburb search and browse interfaces
-3. **Firebase Deployment**: Production deployment with custom domain
-
-### 📖 **Development Resources**
-- **Full Documentation**: See `CLAUDE.md` for comprehensive technical details
-- **Resumption Guide**: See `DEVELOPMENT_STATUS.md` for next session setup
-- **GitHub Repository**: Latest code pushed to `master` branch
-
-## 🏗️ Architecture Overview
-
-### Core Services
-```
-src/lib/
-├── safety-rating-service.ts        # Main orchestration service
-├── enhanced-crime-severity.ts      # Granular crime scoring (40+ types)
-├── geographic-mapper.ts            # Spatial analysis with Turf.js
-├── geographic-correspondence.ts    # SA2-Police District mapping
-├── crime-parser.ts                 # Crime data parsing (preserves granularity)
-├── abs-api.ts                      # ABS Census data integration
-└── abs-real-parser.ts              # Real ABS DataPack parser
-```
-
-### UI Components
-```
-src/components/
-├── SafetyRatingDisplay.tsx         # Comprehensive safety analysis UI
-├── SafetyRatingBadge.tsx          # Compact rating badge
-└── SuburbCard.tsx                 # Enhanced suburb cards with ratings
-```
-
-### Pages & API Routes
-```
-src/app/
-├── demo/                          # Interactive demo page
-├── suburbs/[id]/                  # Detailed suburb analysis
-├── api/safety/                    # Safety rating endpoints
-├── api/integration/               # Integration testing
-└── api/abs/                       # Census data endpoints
-```
-
-## 🔢 Crime Severity Scoring System
-
-### Severity Levels (1-100 scale)
-| Category | Range | Examples | Weighting |
-|----------|--------|----------|-----------|
-| **Homicide** | 90-100 | Murder (100), Attempted Murder (95), Manslaughter (90) | 3.0× |
-| **Sexual Offences** | 75-95 | Sexual Assault of Child (95), Aggravated Sexual Assault (92) | 2.8× |
-| **Violent Crime** | 40-90 | Kidnapping (90), Armed Robbery (85), GBH (80) | 2.5× |
-| **Property Crime** | 20-60 | Aggravated Burglary (60), Motor Vehicle Theft (50) | 2.0× |
-| **Drug Crime** | 25-70 | Drug Trafficking (70), Drug Possession (25) | 1.8× |
-| **Traffic Crime** | 15-45 | Dangerous Driving (45), Drink Driving (35) | 1.2× |
-| **Public Order** | 10-30 | Disorderly Conduct (20), Public Nuisance (15) | 1.0× |
-
-### Calculation Formula
-```javascript
-// Individual weighted score for each crime type
-individualScore = offenceCount × severityScore × weightingFactor
-
-// Total weighted crime score
-totalScore = sum(allIndividualScores)
-
-// Frequency impact adjustment
-frequencyImpact = 1 + log(1 + totalCrimes)
-
-// Normalized safety rating (1-10 scale, 10 = safest)
-safetyRating = 10 - (8 × (1 - exp(-normalizedScore/10000)))
-```
-
-## 📈 Performance Metrics
-
-### 🎯 Production Performance (100% Health Score)
-- **Real Data Integration**: 100% ABS Census + 100% WA Police Crime Data ✅
-- **Geographic Coverage**: 1,701 suburbs statewide (100% WA coverage) ✅
-- **API Response Time**: <20ms complex queries, 2ms average ⚡
-- **Safety Rating Calculation**: <1 second end-to-end 🚀
-- **Cache Hit Rate**: 85%+ for repeated requests 📈
-- **Data Quality**: "High" quality across all test suburbs ✅
-
-### Algorithm Efficiency
-- **Enhanced Crime Severity**: <1ms processing for 40+ granular crime types
-- **Neighborhood Influence**: Distance-weighted spatial analysis with Turf.js
-- **Multi-Factor Rating**: 50% crime + 25% demographics + 15% neighborhood + 10% trends
-- **Confidence Scoring**: 89%+ confidence for areas with complete real data
-
-## 🗺️ Production Dataset
-
-### 🎉 Complete Western Australia Coverage
-The application now operates with comprehensive real government data:
-- **1,701 WA Suburbs**: Complete statewide coverage from Perth CBD to remote mining towns
-- **Real ABS 2021 Census Data**: Authentic demographic and economic data via SA2 mappings
-- **WA Police Crime Statistics**: Official district crime data from government Excel time series
-- **Geographic Boundaries**: Authentic ABS SAL (Suburb and Locality) shapefiles and coordinates
-
-### 📊 Data Sources & Quality
-- ✅ **ABS Census Integration**: 99.9% SA2 coverage (1,700/1,701 suburbs mapped)
-- ✅ **WA Police Crime Data**: 15 police districts with authentic crime statistics
-- ✅ **Geographic Accuracy**: Official government boundaries and coordinate transformations
-- ✅ **Real-Time Processing**: Live safety rating calculations with <1s response time
-
-## 🛠️ Technology Stack
-
-- **Frontend**: Next.js 15, TypeScript, Tailwind CSS
-- **Backend**: Next.js API Routes, Node.js
-- **Database**: Firebase Firestore (ready for deployment)
-- **Spatial Analysis**: Turf.js for geographic calculations
-- **Data Sources**: ABS Census API, WA Police crime statistics
-- **Authentication**: Firebase Auth (configured)
-- **Hosting**: Firebase Hosting (free tier optimized)
-
-## 🧪 Testing
-
-### Implemented Testing
-- **Integration Tests**: Full pipeline validation via `/api/integration/test`
-- **Algorithm Testing**: Enhanced crime severity via `/api/safety/test-enhanced`
-- **Geographic Testing**: SA2-Police District mapping validation
-- **Performance Monitoring**: Response time and cache effectiveness tracking
-
-### Test the Production System
 ```bash
-# System health check (returns 100% health score)
-curl "http://localhost:3000/api/integration/test"
+# System health check
+curl http://localhost:3000/api/integration/test
 
-# Get safety rating for any WA suburb (e.g., Abba River - SAL 50001)
-curl "http://localhost:3000/api/safety?action=suburb&sal_code=50001"
-
-# Browse all 1,701 WA suburbs
-curl "http://localhost:3000/api/suburbs?limit=1701"
-
-# Get specific suburb details (e.g., Alfred Cove - SAL 50010)
-curl "http://localhost:3000/api/suburbs?sal_code=50010"
+# Perth CBD analysis
+curl http://localhost:3000/api/safety?sal_code=50644
+curl "http://localhost:3000/api/convenience-enhanced?lat=-31.9505&lng=115.8605"
 ```
 
-## 📝 Example Usage
+## Data Sources
 
-### Real Suburb Safety Rating
-```javascript
-// Get safety rating for any WA suburb (e.g., Abba River - SAL 50001)
-const response = await fetch('/api/safety?action=suburb&sal_code=50001');
-const data = await response.json();
-
-console.log(data.data.overallRating); // e.g., 7.1/10 (from real data)
-console.log(data.data.confidence); // e.g., 0.89 (89% confidence)
-console.log(data.data.components); // Crime, demographic, neighborhood, trend ratings
-console.log(data.data.dataAvailability); // hasCensusData: true, hasCrimeData: true
-```
-
-### Browse All WA Suburbs
-```javascript
-// Get all 1,701 WA suburbs with search and filtering
-const response = await fetch('/api/suburbs?limit=1701');
-const data = await response.json();
-
-console.log(data.data.length); // 1701 suburbs
-console.log(data.data[0]); // First suburb with full details
-// Each suburb includes: sal_code, sal_name, coordinates, classification_type, etc.
-```
-
-## 🔮 Future Enhancements
-
-- [x] ✅ Complete WA state-wide suburb dataset integration (1,701 suburbs DONE)
-- [x] ✅ Real ABS Census 2021 data integration (100% coverage DONE)
-- [x] ✅ WA Police crime statistics integration (authentic data DONE)
-- [x] ✅ Complete frontend with suburb browsing and detail pages (DONE)
-- [ ] Real-time WA Police crime data API feeds (currently using processed Excel data)
-- [ ] Mobile React Native application (architecture ready)
-- [ ] Advanced demographic correlation analysis and predictive modeling
-- [ ] Property price prediction integration with real estate APIs
-- [ ] Historical trend analysis and forecasting (2011-2021 Census comparison)
-- [ ] Interstate expansion to NSW, VIC, QLD with state-specific crime data sources
-
-## 📄 License
-
-This project is private and proprietary. All rights reserved.
-
-## 🤝 Contributing
-
-This is a private development project. For questions or discussions, please contact the development team.
+- **Crime Data**: WA Police official statistics (199,800+ records)
+- **Demographics**: ABS 2021 Census (99.9% coverage)
+- **Facilities**: Comprehensive database (38,862 facilities)
+- **Geographic**: Official ABS suburb boundaries
 
 ---
 
-**🎯 Ready to explore all 1,701 WA suburbs with real data-driven safety insights!**
-
-- 🏘️ **Browse Suburbs**: Visit `/suburbs` to explore the complete WA suburb database
-- 🔍 **Search & Filter**: Find suburbs by name, classification, or economic base
-- 📊 **Detailed Analysis**: Click any suburb for comprehensive demographic and safety analysis
-- 🎮 **Interactive Demo**: Visit `/demo` to see the neighborhood-influenced safety calculation system
+**Get Started**: Read the [Documentation](docs/) for detailed guides and technical information.

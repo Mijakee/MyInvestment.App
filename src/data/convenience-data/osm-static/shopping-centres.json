@@ -1,0 +1,2004 @@
+[
+  {
+    "name": "Westfield Carousel",
+    "latitude": -32.0167,
+    "longitude": 115.9342,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "major_mall",
+    "suburb": "Cannington",
+    "metadata": {
+      "size": "major",
+      "anchor_stores": 3,
+      "specialty_stores": 150
+    }
+  },
+  {
+    "name": "Garden City Shopping Centre",
+    "latitude": -32.0417,
+    "longitude": 115.8142,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "major_mall",
+    "suburb": "Booragoon",
+    "metadata": {
+      "size": "major",
+      "anchor_stores": 3,
+      "specialty_stores": 150
+    }
+  },
+  {
+    "name": "Westfield Innaloo",
+    "latitude": -31.8983,
+    "longitude": 115.7978,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "major_mall",
+    "suburb": "Innaloo",
+    "metadata": {
+      "size": "major",
+      "anchor_stores": 3,
+      "specialty_stores": 150
+    }
+  },
+  {
+    "name": "Joondalup Shopping Centre",
+    "latitude": -31.7448,
+    "longitude": 115.7661,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "major_mall",
+    "suburb": "Joondalup",
+    "metadata": {
+      "size": "major",
+      "anchor_stores": 3,
+      "specialty_stores": 150
+    }
+  },
+  {
+    "name": "Westfield Whitfords",
+    "latitude": -31.8,
+    "longitude": 115.77,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "major_mall",
+    "suburb": "Hillarys",
+    "metadata": {
+      "size": "major",
+      "anchor_stores": 3,
+      "specialty_stores": 150
+    }
+  },
+  {
+    "name": "Karrinyup Shopping Centre",
+    "latitude": -31.8833,
+    "longitude": 115.7833,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "major_mall",
+    "suburb": "Karrinyup",
+    "metadata": {
+      "size": "major",
+      "anchor_stores": 3,
+      "specialty_stores": 150
+    }
+  },
+  {
+    "name": "Morley Galleria",
+    "latitude": -31.8942,
+    "longitude": 115.9053,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "major_mall",
+    "suburb": "Morley",
+    "metadata": {
+      "size": "major",
+      "anchor_stores": 3,
+      "specialty_stores": 150
+    }
+  },
+  {
+    "name": "Armadale Shopping City",
+    "latitude": -32.15,
+    "longitude": 116.0167,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "major_mall",
+    "suburb": "Armadale",
+    "metadata": {
+      "size": "major",
+      "anchor_stores": 3,
+      "specialty_stores": 150
+    }
+  },
+  {
+    "name": "Rockingham Centre",
+    "latitude": -32.2778,
+    "longitude": 115.7331,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "major_mall",
+    "suburb": "Rockingham",
+    "metadata": {
+      "size": "major",
+      "anchor_stores": 3,
+      "specialty_stores": 150
+    }
+  },
+  {
+    "name": "Mandurah Forum",
+    "latitude": -32.5269,
+    "longitude": 115.7217,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "major_mall",
+    "suburb": "Mandurah",
+    "metadata": {
+      "size": "major",
+      "anchor_stores": 3,
+      "specialty_stores": 150
+    }
+  },
+  {
+    "name": "Alexander Heights Shopping Centre",
+    "latitude": -31.82946731709797,
+    "longitude": 115.86457758865903,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Alexander Heights",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Applecross Shopping Centre",
+    "latitude": -32.01130956729398,
+    "longitude": 115.83718285870975,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Applecross",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Ardross Shopping Centre",
+    "latitude": -32.028469544798064,
+    "longitude": 115.8378800282404,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Ardross",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Ascot (WA) Shopping Centre",
+    "latitude": -31.93403921788647,
+    "longitude": 115.925674050562,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Ascot (WA)",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Attadale Shopping Centre",
+    "latitude": -32.02443504003764,
+    "longitude": 115.80101680371952,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Attadale",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Balcatta Shopping Centre",
+    "latitude": -31.87309673976966,
+    "longitude": 115.81495790347634,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Balcatta",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Balga Shopping Centre",
+    "latitude": -31.856148868716694,
+    "longitude": 115.84400134426342,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Balga",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Ballajura Shopping Centre",
+    "latitude": -31.84241789024703,
+    "longitude": 115.8923194146862,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Ballajura",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Bassendean (WA) Shopping Centre",
+    "latitude": -31.908220997656283,
+    "longitude": 115.94460512596514,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Bassendean (WA)",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Bateman Shopping Centre",
+    "latitude": -32.058430170829254,
+    "longitude": 115.84676567499967,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Bateman",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Bayswater (WA) Shopping Centre",
+    "latitude": -31.91542850921189,
+    "longitude": 115.9180762975847,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Bayswater (WA)",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Beckenham Shopping Centre",
+    "latitude": -32.02697627151981,
+    "longitude": 115.95643633881059,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Beckenham",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Bedford Shopping Centre",
+    "latitude": -31.905419207738994,
+    "longitude": 115.89408552542434,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Bedford",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Beechboro Shopping Centre",
+    "latitude": -31.869027189837936,
+    "longitude": 115.9374222360221,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Beechboro",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Belmont (WA) Shopping Centre",
+    "latitude": -31.946826767500976,
+    "longitude": 115.93060467606497,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Belmont (WA)",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Bennett Springs Shopping Centre",
+    "latitude": -31.85423518671914,
+    "longitude": 115.94177376514442,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Bennett Springs",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Bentley (WA) Shopping Centre",
+    "latitude": -32.00307363399072,
+    "longitude": 115.90448467831831,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Bentley (WA)",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Bicton Shopping Centre",
+    "latitude": -32.02290667696411,
+    "longitude": 115.78968421492918,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Bicton",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Booragoon Shopping Centre",
+    "latitude": -32.03580588361471,
+    "longitude": 115.83241017968372,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Booragoon",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Bull Creek (WA) Shopping Centre",
+    "latitude": -32.05526574383695,
+    "longitude": 115.86483205356829,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Bull Creek (WA)",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Burswood Shopping Centre",
+    "latitude": -31.95299437224957,
+    "longitude": 115.89295783559535,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Burswood",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Cannington Shopping Centre",
+    "latitude": -32.0155106730175,
+    "longitude": 115.93724833734514,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Cannington",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Carine Shopping Centre",
+    "latitude": -31.848207964354938,
+    "longitude": 115.77862728831904,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Carine",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Carlisle Shopping Centre",
+    "latitude": -31.979073926386658,
+    "longitude": 115.91697882521133,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Carlisle",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Caversham Shopping Centre",
+    "latitude": -31.8794938487977,
+    "longitude": 115.98077823976026,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Caversham",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Churchlands Shopping Centre",
+    "latitude": -31.925247569238497,
+    "longitude": 115.79072736688609,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Churchlands",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "City Beach Shopping Centre",
+    "latitude": -31.932597415437193,
+    "longitude": 115.7674121805331,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "City Beach",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Claremont (WA) Shopping Centre",
+    "latitude": -31.982089048740264,
+    "longitude": 115.77777686830699,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Claremont (WA)",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Cloverdale Shopping Centre",
+    "latitude": -31.965690908618004,
+    "longitude": 115.94198377966694,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Cloverdale",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Como (WA) Shopping Centre",
+    "latitude": -32.00456259733391,
+    "longitude": 115.86951112166912,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Como (WA)",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Cottesloe Shopping Centre",
+    "latitude": -31.99725197955101,
+    "longitude": 115.75857353329734,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Cottesloe",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Crawley Shopping Centre",
+    "latitude": -31.97605419209075,
+    "longitude": 115.82294439299541,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Crawley",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Dalkeith Shopping Centre",
+    "latitude": -32.000086594912275,
+    "longitude": 115.80368624352738,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Dalkeith",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Dianella Shopping Centre",
+    "latitude": -31.884321371011456,
+    "longitude": 115.87282590230735,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Dianella",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Doubleview Shopping Centre",
+    "latitude": -31.893406620562185,
+    "longitude": 115.78290091576295,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Doubleview",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "East Cannington Shopping Centre",
+    "latitude": -32.0054244099243,
+    "longitude": 115.95696426439831,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "East Cannington",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "East Fremantle Shopping Centre",
+    "latitude": -32.03738357106774,
+    "longitude": 115.76376746198115,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "East Fremantle",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "East Perth Shopping Centre",
+    "latitude": -31.957567476217267,
+    "longitude": 115.8791935994909,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "East Perth",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "East Victoria Park Shopping Centre",
+    "latitude": -31.986809013377734,
+    "longitude": 115.90432692051344,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "East Victoria Park",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Eden Hill Shopping Centre",
+    "latitude": -31.891154306632693,
+    "longitude": 115.94824716518177,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Eden Hill",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Embleton Shopping Centre",
+    "latitude": -31.902648810962262,
+    "longitude": 115.90828344093543,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Embleton",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Ferndale (WA) Shopping Centre",
+    "latitude": -32.026249673054515,
+    "longitude": 115.92158849821493,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Ferndale (WA)",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Floreat Shopping Centre",
+    "latitude": -31.934426095209925,
+    "longitude": 115.79273557158263,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Floreat",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Forrestfield Shopping Centre",
+    "latitude": -31.98022323094637,
+    "longitude": 116.00734432436431,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Forrestfield",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Fremantle Shopping Centre",
+    "latitude": -32.055179918071104,
+    "longitude": 115.76218976756496,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Fremantle",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Girrawheen Shopping Centre",
+    "latitude": -31.842982567551097,
+    "longitude": 115.83910612380087,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Girrawheen",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Greenwood (WA) Shopping Centre",
+    "latitude": -31.828761142324026,
+    "longitude": 115.79790799460892,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Greenwood (WA)",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Guildford (WA) Shopping Centre",
+    "latitude": -31.89823296355174,
+    "longitude": 115.97931132129666,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Guildford (WA)",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Gwelup Shopping Centre",
+    "latitude": -31.868446439485012,
+    "longitude": 115.79780826049807,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Gwelup",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Hamersley Shopping Centre",
+    "latitude": -31.84809134646929,
+    "longitude": 115.80810319510303,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Hamersley",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Hazelmere Shopping Centre",
+    "latitude": -31.908230300241506,
+    "longitude": 116.00539388838884,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Hazelmere",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Herdsman Shopping Centre",
+    "latitude": -31.916355031945173,
+    "longitude": 115.80526569952924,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Herdsman",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "High Wycombe Shopping Centre",
+    "latitude": -31.948335656928887,
+    "longitude": 115.995991251231,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "High Wycombe",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Hilton (WA) Shopping Centre",
+    "latitude": -32.07034964414135,
+    "longitude": 115.7872333239159,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Hilton (WA)",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Inglewood (WA) Shopping Centre",
+    "latitude": -31.915575730239823,
+    "longitude": 115.88458559398879,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Inglewood (WA)",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Innaloo Shopping Centre",
+    "latitude": -31.88805019662694,
+    "longitude": 115.79463685177475,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Innaloo",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Joondanna Shopping Centre",
+    "latitude": -31.91055236641068,
+    "longitude": 115.83245732797926,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Joondanna",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Kardinya Shopping Centre",
+    "latitude": -32.06810147619362,
+    "longitude": 115.81086400420745,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Kardinya",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Karrakatta Shopping Centre",
+    "latitude": -31.970149348975397,
+    "longitude": 115.79808896266296,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Karrakatta",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Karrinyup Shopping Centre",
+    "latitude": -31.875118192586516,
+    "longitude": 115.77532486213842,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Karrinyup",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Kensington (WA) Shopping Centre",
+    "latitude": -31.98100545554313,
+    "longitude": 115.88159784343488,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Kensington (WA)",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Kenwick Shopping Centre",
+    "latitude": -32.02835635157685,
+    "longitude": 115.97625278809355,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Kenwick",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Kewdale Shopping Centre",
+    "latitude": -31.976549844292,
+    "longitude": 115.95072628186813,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Kewdale",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Kiara Shopping Centre",
+    "latitude": -31.882408040540582,
+    "longitude": 115.94007663116405,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Kiara",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Kings Park (WA) Shopping Centre",
+    "latitude": -31.959066136337643,
+    "longitude": 115.83339530999541,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Kings Park (WA)",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Koondoola Shopping Centre",
+    "latitude": -31.84077944530897,
+    "longitude": 115.86353313391677,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Koondoola",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Langford Shopping Centre",
+    "latitude": -32.03963117062346,
+    "longitude": 115.9452174731093,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Langford",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Lathlain Shopping Centre",
+    "latitude": -31.97234321868181,
+    "longitude": 115.9052044006569,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Lathlain",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Leederville Shopping Centre",
+    "latitude": -31.930779247139874,
+    "longitude": 115.84385372925351,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Leederville",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Leeming Shopping Centre",
+    "latitude": -32.07380751040096,
+    "longitude": 115.86229428713044,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Leeming",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Lockridge Shopping Centre",
+    "latitude": -31.8790042726615,
+    "longitude": 115.95093327370247,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Lockridge",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Lynwood (WA) Shopping Centre",
+    "latitude": -32.040683151529,
+    "longitude": 115.93352655854993,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Lynwood (WA)",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Malaga Shopping Centre",
+    "latitude": -31.860792232009796,
+    "longitude": 115.89623909266065,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Malaga",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Manning Shopping Centre",
+    "latitude": -32.01563349361599,
+    "longitude": 115.86607188166744,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Manning",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Marangaroo Shopping Centre",
+    "latitude": -31.82494357791451,
+    "longitude": 115.84055140042142,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Marangaroo",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Maylands (WA) Shopping Centre",
+    "latitude": -31.940155624034837,
+    "longitude": 115.896348519803,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Maylands (WA)",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Melville (WA) Shopping Centre",
+    "latitude": -32.0441452099889,
+    "longitude": 115.80541923164067,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Melville (WA)",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Mirrabooka (WA) Shopping Centre",
+    "latitude": -31.86320885594679,
+    "longitude": 115.86348976254348,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Mirrabooka (WA)",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Morley Shopping Centre",
+    "latitude": -31.889318055259192,
+    "longitude": 115.90914842038228,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Morley",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Mosman Park (WA) Shopping Centre",
+    "latitude": -32.01145907298566,
+    "longitude": 115.76925819543763,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Mosman Park (WA)",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Mount Claremont Shopping Centre",
+    "latitude": -31.957455598181145,
+    "longitude": 115.78053286963915,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Mount Claremont",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Mount Hawthorn Shopping Centre",
+    "latitude": -31.917157107058976,
+    "longitude": 115.83890799098481,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Mount Hawthorn",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Mount Lawley Shopping Centre",
+    "latitude": -31.932985484500204,
+    "longitude": 115.87872671270057,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Mount Lawley",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Mount Pleasant (WA) Shopping Centre",
+    "latitude": -32.030673616834214,
+    "longitude": 115.84445799141392,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Mount Pleasant (WA)",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Murdoch Shopping Centre",
+    "latitude": -32.07117013951297,
+    "longitude": 115.83493249668702,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Murdoch",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Myaree Shopping Centre",
+    "latitude": -32.04560973117067,
+    "longitude": 115.81527554318592,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Myaree",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Nedlands Shopping Centre",
+    "latitude": -31.97495156350422,
+    "longitude": 115.8104194870564,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Nedlands",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Nollamara Shopping Centre",
+    "latitude": -31.88277853498215,
+    "longitude": 115.84792108140442,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Nollamara",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Noranda Shopping Centre",
+    "latitude": -31.86962254997231,
+    "longitude": 115.89445605716323,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Noranda",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "North Beach (WA) Shopping Centre",
+    "latitude": -31.855877998593687,
+    "longitude": 115.75781704635266,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "North Beach (WA)",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "North Fremantle Shopping Centre",
+    "latitude": -32.042410242316585,
+    "longitude": 115.74296707529186,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "North Fremantle",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "North Lake Shopping Centre",
+    "latitude": -32.083817981220676,
+    "longitude": 115.83305955305542,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "North Lake",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "North Perth Shopping Centre",
+    "latitude": -31.925446210542678,
+    "longitude": 115.8523058435002,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "North Perth",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "O'Connor (WA) Shopping Centre",
+    "latitude": -32.064529192394694,
+    "longitude": 115.79284846168048,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "O'Connor (WA)",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Osborne Park Shopping Centre",
+    "latitude": -31.907781427134534,
+    "longitude": 115.81414491192338,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Osborne Park",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Palmyra (WA) Shopping Centre",
+    "latitude": -32.04732397517531,
+    "longitude": 115.78188718228947,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Palmyra (WA)",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Parkwood (WA) Shopping Centre",
+    "latitude": -32.0463470186141,
+    "longitude": 115.91092349899822,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Parkwood (WA)",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Perth (WA) Shopping Centre",
+    "latitude": -31.949591631306987,
+    "longitude": 115.85615054894299,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Perth (WA)",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Perth Airport Shopping Centre",
+    "latitude": -31.944706124790056,
+    "longitude": 115.96813401889953,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Perth Airport",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Queens Park (WA) Shopping Centre",
+    "latitude": -32.00123253893335,
+    "longitude": 115.949689132346,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Queens Park (WA)",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Redcliffe (WA) Shopping Centre",
+    "latitude": -31.939684868790057,
+    "longitude": 115.95143023512276,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Redcliffe (WA)",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Riverton (WA) Shopping Centre",
+    "latitude": -32.03268960711178,
+    "longitude": 115.90104821186803,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Riverton (WA)",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Rivervale Shopping Centre",
+    "latitude": -31.95998079049378,
+    "longitude": 115.91467961695233,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Rivervale",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Rossmoyne Shopping Centre",
+    "latitude": -32.04364462659708,
+    "longitude": 115.87061952646654,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Rossmoyne",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Salter Point Shopping Centre",
+    "latitude": -32.02413807603353,
+    "longitude": 115.86855479526251,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Salter Point",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Scarborough (WA) Shopping Centre",
+    "latitude": -31.892678945351534,
+    "longitude": 115.76693370258903,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Scarborough (WA)",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Shelley (WA) Shopping Centre",
+    "latitude": -32.034296188341585,
+    "longitude": 115.88266242877091,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Shelley (WA)",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Shenton Park Shopping Centre",
+    "latitude": -31.95576179433242,
+    "longitude": 115.80423904538321,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Shenton Park",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "South Guildford Shopping Centre",
+    "latitude": -31.915697552078022,
+    "longitude": 115.97164644219909,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "South Guildford",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "South Perth Shopping Centre",
+    "latitude": -31.976015071257294,
+    "longitude": 115.8615580415564,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "South Perth",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "St James (WA) Shopping Centre",
+    "latitude": -32.00007824135194,
+    "longitude": 115.91158667492321,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "St James (WA)",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Stirling (WA) Shopping Centre",
+    "latitude": -31.882202733036713,
+    "longitude": 115.81410620117953,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Stirling (WA)",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Subiaco Shopping Centre",
+    "latitude": -31.94860205025642,
+    "longitude": 115.82686480284762,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Subiaco",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Swanbourne Shopping Centre",
+    "latitude": -31.970521764186945,
+    "longitude": 115.76834346638644,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Swanbourne",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Trigg Shopping Centre",
+    "latitude": -31.881163899124264,
+    "longitude": 115.75680941837106,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Trigg",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Tuart Hill Shopping Centre",
+    "latitude": -31.89433320405459,
+    "longitude": 115.83947177992512,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Tuart Hill",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Victoria Park Shopping Centre",
+    "latitude": -31.979471737469463,
+    "longitude": 115.89061132959114,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Victoria Park",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Warwick (WA) Shopping Centre",
+    "latitude": -31.83854849139488,
+    "longitude": 115.8117656036121,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Warwick (WA)",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Waterford (WA) Shopping Centre",
+    "latitude": -32.01701587671681,
+    "longitude": 115.89119174114245,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Waterford (WA)",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Wattle Grove (WA) Shopping Centre",
+    "latitude": -32.008115837454106,
+    "longitude": 116.00107010165958,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Wattle Grove (WA)",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Welshpool (WA) Shopping Centre",
+    "latitude": -31.994478779063996,
+    "longitude": 115.94806632975332,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Welshpool (WA)",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Wembley Shopping Centre",
+    "latitude": -31.93152208896573,
+    "longitude": 115.81376470050758,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Wembley",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Wembley Downs Shopping Centre",
+    "latitude": -31.913728535065832,
+    "longitude": 115.78008998967954,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Wembley Downs",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "West Leederville Shopping Centre",
+    "latitude": -31.94156466132277,
+    "longitude": 115.83508326988135,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "West Leederville",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "West Perth Shopping Centre",
+    "latitude": -31.94860517336306,
+    "longitude": 115.84597047359632,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "West Perth",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Westminster Shopping Centre",
+    "latitude": -31.868217258614386,
+    "longitude": 115.8354110579495,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Westminster",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Willagee Shopping Centre",
+    "latitude": -32.05571520597848,
+    "longitude": 115.8067036346847,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Willagee",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Willetton Shopping Centre",
+    "latitude": -32.05086529925845,
+    "longitude": 115.88883681791614,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Willetton",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Wilson Shopping Centre",
+    "latitude": -32.01815485359338,
+    "longitude": 115.90932914911255,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Wilson",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Winthrop Shopping Centre",
+    "latitude": -32.04940840172545,
+    "longitude": 115.82866152320435,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Winthrop",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Woodbridge (WA) Shopping Centre",
+    "latitude": -31.88794297542088,
+    "longitude": 115.99039522870595,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Woodbridge (WA)",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Woodlands (WA) Shopping Centre",
+    "latitude": -31.90632188715203,
+    "longitude": 115.78746911767234,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Woodlands (WA)",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  },
+  {
+    "name": "Yokine Shopping Centre",
+    "latitude": -31.90349082888694,
+    "longitude": 115.85032075839983,
+    "type": "shopping_centre",
+    "category": "shopping_centres",
+    "subcategory": "community_centre",
+    "suburb": "Yokine",
+    "metadata": {
+      "size": "medium",
+      "anchor_stores": 1,
+      "specialty_stores": 25
+    }
+  }
+]
